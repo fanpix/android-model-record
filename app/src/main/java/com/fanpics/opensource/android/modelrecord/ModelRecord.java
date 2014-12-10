@@ -2,13 +2,13 @@ package com.fanpics.opensource.android.modelrecord;
 
 import android.os.Handler;
 
-import com.fanpics.opensource.android.modelrecord.callback.BaseRecordSettings;
+import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
 import com.fanpics.opensource.android.modelrecord.callback.CreateCallback;
 import com.fanpics.opensource.android.modelrecord.callback.DeleteCallback;
 import com.fanpics.opensource.android.modelrecord.callback.LoadCallback;
 import com.fanpics.opensource.android.modelrecord.callback.LoadListCallback;
-import com.fanpics.opensource.android.modelrecord.callback.MultiRecordSettings;
-import com.fanpics.opensource.android.modelrecord.callback.SingleRecordSettings;
+import com.fanpics.opensource.android.modelrecord.settings.MultiRecordSettings;
+import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
 import com.fanpics.opensource.android.modelrecord.callback.UpdateCallback;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.squareup.otto.Bus;

@@ -2,6 +2,7 @@ package com.fanpics.opensource.android.modelrecord.callback;
 
 import android.os.Handler;
 
+import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
 import com.squareup.otto.Bus;
 
 public class LoadCallback<T> extends RecordCallback<T> {

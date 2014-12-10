@@ -1,5 +1,6 @@
 package com.fanpics.opensource.android.modelrecord.callback;
 
+import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
 import com.squareup.otto.Bus;
 
 public class CreateCallback<T> extends RecordCallback<T> {

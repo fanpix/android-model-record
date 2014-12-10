@@ -4,6 +4,8 @@ import android.os.Handler;
 
 import com.fanpics.opensource.android.modelrecord.RecordCache;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
+import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
+import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
 import com.squareup.otto.Bus;
 
 import retrofit.Callback;
