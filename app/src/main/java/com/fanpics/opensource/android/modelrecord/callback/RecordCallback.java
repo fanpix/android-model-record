@@ -2,6 +2,7 @@ package com.fanpics.opensource.android.modelrecord.callback;
 
 import android.os.Handler;
 
+import com.fanpics.opensource.android.modelrecord.HttpReport;
 import com.fanpics.opensource.android.modelrecord.RecordCache;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
@@ -17,13 +18,13 @@ public class RecordCallback<T> extends BaseRecordCallback implements Callback<T>
     protected SingleRecordSettings<T> settings;
     protected Object key;
 
-    protected RecordCallback(SingleRecordSettings<T> settings, Bus bus, NewRelicManager newRelicManager){
-        super(bus, newRelicManager);
+    protected RecordCallback(SingleRecordSettings<T> settings, Bus bus, HttpReport httpReport){
+        super(bus, httpReport);
         this.settings = settings;
     }
 
-    public RecordCallback(SingleRecordSettings<T> settings, Bus bus, NewRelicManager newRelicManager, Handler handler) {
-        super(bus, newRelicManager, handler);
+    public RecordCallback(SingleRecordSettings<T> settings, Bus bus, HttpReport httpReport, Handler handler) {
+        super(bus, httpReport, handler);
         this.settings = settings;
     }
 

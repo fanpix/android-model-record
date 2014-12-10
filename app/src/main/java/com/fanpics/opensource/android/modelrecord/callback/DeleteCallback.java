@@ -1,15 +1,16 @@
 package com.fanpics.opensource.android.modelrecord.callback;
 
+import com.fanpics.opensource.android.modelrecord.HttpReport;
 import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
 import com.squareup.otto.Bus;
 
 public class DeleteCallback<T> extends RecordCallback<T> {
 
-    protected DeleteCallback(SingleRecordSettings settings, Bus bus, NewRelicManager newRelicManager) {
-        super(settings, bus, newRelicManager);
+    protected DeleteCallback(SingleRecordSettings settings, Bus bus, HttpReport httpReport) {
+        super(settings, bus, httpReport);
     }
 
-    public static <T> DeleteCallback<T> createFromSettings(SingleRecordSettings settings, Bus bus, NewRelicManager newRelicManager){
-        return new DeleteCallback<T>(settings, bus, newRelicManager);
+    public static <T> DeleteCallback<T> createFromSettings(SingleRecordSettings settings, Bus bus, HttpReport httpReport){
+        return new DeleteCallback<T>(settings, bus, httpReport);
     }
 }

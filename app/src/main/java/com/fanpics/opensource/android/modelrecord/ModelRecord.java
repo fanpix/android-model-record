@@ -16,13 +16,18 @@ import com.squareup.otto.Bus;
 import java.util.List;
 
 public class ModelRecord<T> {
-    private final NewRelicManager newRelicManager;
+    private HttpReport httpReport;
     protected Bus bus;
     protected Handler handler;
 
-    public ModelRecord(Bus bus, NewRelicManager newRelicManager) {
+    public ModelRecord(Bus bus, HttpReport httpReport) {
         this.bus = bus;
-        this.newRelicManager = newRelicManager;
+        this.httpReport = httpReport;
+        this.handler = new Handler();
+    }
+
+    public ModelRecord(Bus bus) {
+        this.bus = bus;
         this.handler = new Handler();
     }
 
@@ -37,7 +42,7 @@ public class ModelRecord<T> {
 
     public void create(T model){
         SingleRecordSettings settings = setupCreateSettings(new SingleRecordSettings<T>(), model);
-        final CreateCallback createCallback = CreateCallback.createFromSettings(settings, bus, newRelicManager);
+        final CreateCallback createCallback = CreateCallback.createFromSettings(settings, bus, httpReport);
         createOnServer(model, createCallback);
     }
 
@@ -51,7 +56,7 @@ public class ModelRecord<T> {
 
     public void update(T model){
         SingleRecordSettings settings = setupUpdateSettings(new SingleRecordSettings<T>(), model);
-        final UpdateCallback updateCallback = UpdateCallback.createFromSettings(settings, bus, newRelicManager);
+        final UpdateCallback updateCallback = UpdateCallback.createFromSettings(settings, bus, httpReport);
         updateOnServer(model, updateCallback);
     }
 
@@ -123,7 +128,7 @@ public class ModelRecord<T> {
     }
 
     private List loadListOnServer(Object key, MultiRecordSettings settings) {
-        final LoadListCallback loadListCallback = LoadListCallback.createFromSettings(settings, bus, newRelicManager, handler);
+        final LoadListCallback loadListCallback = LoadListCallback.createFromSettings(settings, bus, httpReport, handler);
         if (settings.shouldRunSynchronously()){
             final Result<List> result = loadListOnServerSynchronously(key);
             if(!result.shouldCache()) {
@@ -206,7 +211,7 @@ public class ModelRecord<T> {
     }
 
     private Object loadOnServer(Object key, SingleRecordSettings settings) {
-        final LoadCallback loadCallback = LoadCallback.createFromSettings(settings, bus, newRelicManager, key, handler);
+        final LoadCallback loadCallback = LoadCallback.createFromSettings(settings, bus, httpReport, key, handler);
         if (settings.shouldRunSynchronously()){
             final Result result = loadOnServerSynchronously(key);
             if(!result.shouldCache()) {
@@ -247,7 +252,7 @@ public class ModelRecord<T> {
 
     public void delete(T model){
         SingleRecordSettings settings = setupDeleteSettings(new SingleRecordSettings(), model);
-        final DeleteCallback deleteCallback = DeleteCallback.createFromSettings(settings, bus, newRelicManager);
+        final DeleteCallback deleteCallback = DeleteCallback.createFromSettings(settings, bus, httpReport);
         deleteOnServer(model, deleteCallback);
     }
 

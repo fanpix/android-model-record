@@ -2,6 +2,7 @@ package com.fanpics.opensource.android.modelrecord.callback;
 
 import android.os.Handler;
 
+import com.fanpics.opensource.android.modelrecord.HttpReport;
 import com.fanpics.opensource.android.modelrecord.RecordCache;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
@@ -19,18 +20,18 @@ public class LoadListCallback<T> extends BaseRecordCallback implements Callback<
     protected MultiRecordSettings<T> settings;
     protected Object key;
 
-    protected LoadListCallback(MultiRecordSettings<T> settings, Bus bus, NewRelicManager newRelicManager){
-        super(bus, newRelicManager);
+    protected LoadListCallback(MultiRecordSettings<T> settings, Bus bus, HttpReport httpReport){
+        super(bus, httpReport);
         this.settings = settings;
     }
 
-    protected LoadListCallback(MultiRecordSettings settings, Bus bus, NewRelicManager newRelicManager, Handler handler) {
-        super(bus, newRelicManager, handler);
+    protected LoadListCallback(MultiRecordSettings settings, Bus bus, HttpReport httpReport, Handler handler) {
+        super(bus, httpReport, handler);
         this.settings = settings;
     }
 
-    public static LoadListCallback createFromSettings(MultiRecordSettings settings, Bus bus, NewRelicManager newRelicManager, Handler handler) {
-        return new LoadListCallback(settings, bus, newRelicManager, handler);
+    public static LoadListCallback createFromSettings(MultiRecordSettings settings, Bus bus, HttpReport httpReport, Handler handler) {
+        return new LoadListCallback(settings, bus, httpReport, handler);
     }
 
     public void setKey(Object key) {

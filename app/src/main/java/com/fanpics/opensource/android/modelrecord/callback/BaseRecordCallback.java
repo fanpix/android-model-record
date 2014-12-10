@@ -2,6 +2,7 @@ package com.fanpics.opensource.android.modelrecord.callback;
 
 import android.os.Handler;
 
+import com.fanpics.opensource.android.modelrecord.HttpReport;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
 import com.squareup.otto.Bus;
@@ -13,28 +14,28 @@ import retrofit.client.Response;
 
 public abstract class BaseRecordCallback {
 
-    private final NewRelicManager newRelicManager;
+    private final HttpReport httpReport;
     protected Bus bus;
     protected Handler handler;
 
-    protected BaseRecordCallback(Bus bus, NewRelicManager newRelicManager){
+    protected BaseRecordCallback(Bus bus, HttpReport httpReport){
         this.bus = bus;
-        this.newRelicManager = newRelicManager;
+        this.httpReport = httpReport;
     }
 
-    public BaseRecordCallback(Bus bus, NewRelicManager newRelicManager, Handler handler) {
+    public BaseRecordCallback(Bus bus, HttpReport httpReport, Handler handler) {
         this.bus = bus;
-        this.newRelicManager = newRelicManager;
+        this.httpReport = httpReport;
         this.handler = handler;
     }
 
     protected void sendHttpReport(Response response) {
-        if (response != null) {
+        if (response != null && httpReport != null) {
             final String url = response.getUrl();
             final int status = response.getStatus();
             final long startTime = getRecordCallbackSettings().getStartTime();
             final long currentTime = new Date().getTime();
-            newRelicManager.reportHttpTransaction(url, status, startTime, currentTime);
+            httpReport.reportHttpSuccess(url, status, startTime, currentTime, response);
         }
     }
 
@@ -79,15 +80,17 @@ public abstract class BaseRecordCallback {
     }
 
     private void reportNetworkError(Throwable cause, RetrofitError error) {
-        Exception e = null;
+        Exception exception = null;
         if(cause instanceof Exception) {
-            e = (Exception) cause;
+            exception = (Exception) cause;
         }
 
-        final String url = error.getUrl();
-        final long startTime = getRecordCallbackSettings().getStartTime();
-        final long currentTime = new Date().getTime();
-        newRelicManager.reportHttpError(url, startTime, currentTime, e);
+        if (httpReport != null) {
+            final String url = error.getUrl();
+            final long startTime = getRecordCallbackSettings().getStartTime();
+            final long currentTime = new Date().getTime();
+            httpReport.reportHttpError(url, startTime, currentTime, exception, error);
+        }
     }
 
     private void postFailureEvent() {
