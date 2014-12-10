@@ -1,5 +1,6 @@
 /local.properties
 /.idea
+app/app.iml
 .DS_Store
 
 # Built application files

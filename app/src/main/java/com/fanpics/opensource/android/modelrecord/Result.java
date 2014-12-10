@@ -6,12 +6,12 @@ public class Result<T> {
 
     final Response response;
     final T model;
-    private boolean cachable;
+    private boolean cacheable;
 
     public Result(Response response, T model) {
         this.response = response;
         this.model = model;
-        this.cachable = true;
+        this.cacheable = true;
     }
 
     public Response getResponse() {
@@ -23,10 +23,10 @@ public class Result<T> {
     }
 
     public void disableCaching() {
-        cachable = false;
+        cacheable = false;
     }
 
     public boolean shouldCache() {
-        return cachable;
+        return cacheable;
     }
 }

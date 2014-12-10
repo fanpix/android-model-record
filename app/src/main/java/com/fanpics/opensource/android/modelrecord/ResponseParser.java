@@ -1,6 +1,5 @@
 package com.fanpics.opensource.android.modelrecord;
 
-import com.fanpics.util.DateUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

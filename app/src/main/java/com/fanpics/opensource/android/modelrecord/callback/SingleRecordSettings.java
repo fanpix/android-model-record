@@ -1,6 +1,6 @@
 package com.fanpics.opensource.android.modelrecord.callback;
 
-import com.fanpics.app.data.api.record.RecordCache;
+import com.fanpics.opensource.android.modelrecord.RecordCache;
 
 public class SingleRecordSettings<T> extends BaseRecordSettings<T> {
     private RecordCache<T> cache;

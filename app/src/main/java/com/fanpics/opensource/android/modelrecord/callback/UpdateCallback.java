@@ -1,6 +1,5 @@
 package com.fanpics.opensource.android.modelrecord.callback;
 
-import com.fanpics.app.ui.NewRelicManager;
 import com.squareup.otto.Bus;
 
 public class UpdateCallback<T> extends RecordCallback<T> {

@@ -2,16 +2,15 @@ package com.fanpics.opensource.android.modelrecord;
 
 import android.os.Handler;
 
-import com.fanpics.app.data.api.record.callback.BaseRecordSettings;
-import com.fanpics.app.data.api.record.callback.CreateCallback;
-import com.fanpics.app.data.api.record.callback.DeleteCallback;
-import com.fanpics.app.data.api.record.callback.LoadCallback;
-import com.fanpics.app.data.api.record.callback.LoadListCallback;
-import com.fanpics.app.data.api.record.callback.MultiRecordSettings;
-import com.fanpics.app.data.api.record.callback.SingleRecordSettings;
-import com.fanpics.app.data.api.record.callback.UpdateCallback;
-import com.fanpics.app.event.SuccessEvent;
-import com.fanpics.app.ui.NewRelicManager;
+import com.fanpics.opensource.android.modelrecord.callback.BaseRecordSettings;
+import com.fanpics.opensource.android.modelrecord.callback.CreateCallback;
+import com.fanpics.opensource.android.modelrecord.callback.DeleteCallback;
+import com.fanpics.opensource.android.modelrecord.callback.LoadCallback;
+import com.fanpics.opensource.android.modelrecord.callback.LoadListCallback;
+import com.fanpics.opensource.android.modelrecord.callback.MultiRecordSettings;
+import com.fanpics.opensource.android.modelrecord.callback.SingleRecordSettings;
+import com.fanpics.opensource.android.modelrecord.callback.UpdateCallback;
+import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.squareup.otto.Bus;
 
 import java.util.List;

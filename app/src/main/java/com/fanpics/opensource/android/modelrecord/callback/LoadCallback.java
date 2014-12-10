@@ -1,8 +1,7 @@
-package com.fanpics.app.data.api.record.callback;
+package com.fanpics.opensource.android.modelrecord.callback;
 
 import android.os.Handler;
 
-import com.fanpics.app.ui.NewRelicManager;
 import com.squareup.otto.Bus;
 
 public class LoadCallback<T> extends RecordCallback<T> {

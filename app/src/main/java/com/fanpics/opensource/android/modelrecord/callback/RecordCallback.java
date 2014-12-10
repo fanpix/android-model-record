@@ -2,9 +2,8 @@ package com.fanpics.opensource.android.modelrecord.callback;
 
 import android.os.Handler;
 
-import com.fanpics.app.data.api.record.RecordCache;
-import com.fanpics.app.event.SuccessEvent;
-import com.fanpics.app.ui.NewRelicManager;
+import com.fanpics.opensource.android.modelrecord.RecordCache;
+import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.squareup.otto.Bus;
 
 import retrofit.Callback;
@@ -13,15 +12,15 @@ import retrofit.client.Response;
 
 public class RecordCallback<T> extends BaseRecordCallback implements Callback<T> {
 
-    protected com.fanpics.app.data.api.record.callback.SingleRecordSettings<T> settings;
+    protected SingleRecordSettings<T> settings;
     protected Object key;
 
-    protected RecordCallback(com.fanpics.app.data.api.record.callback.SingleRecordSettings<T> settings, Bus bus, NewRelicManager newRelicManager){
+    protected RecordCallback(SingleRecordSettings<T> settings, Bus bus, NewRelicManager newRelicManager){
         super(bus, newRelicManager);
         this.settings = settings;
     }
 
-    public RecordCallback(com.fanpics.app.data.api.record.callback.SingleRecordSettings<T> settings, Bus bus, NewRelicManager newRelicManager, Handler handler) {
+    public RecordCallback(SingleRecordSettings<T> settings, Bus bus, NewRelicManager newRelicManager, Handler handler) {
         super(bus, newRelicManager, handler);
         this.settings = settings;
     }

@@ -3,6 +3,7 @@ package com.fanpics.opensource.android.modelrecord.callback;
 import android.os.Handler;
 
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
+import com.squareup.otto.Bus;
 
 import java.util.Date;
 
@@ -36,7 +37,7 @@ public abstract class BaseRecordCallback {
         }
     }
 
-    protected abstract com.fanpics.app.data.api.record.callback.BaseRecordSettings getRecordCallbackSettings();
+    protected abstract BaseRecordSettings getRecordCallbackSettings();
 
     protected void postSuccessEvent(SuccessEvent event) {
         final Runnable successRunnable = createSuccessRunnable(event);

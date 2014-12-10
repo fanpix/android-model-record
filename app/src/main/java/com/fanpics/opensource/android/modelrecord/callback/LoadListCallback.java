@@ -2,9 +2,8 @@ package com.fanpics.opensource.android.modelrecord.callback;
 
 import android.os.Handler;
 
-import com.fanpics.app.data.api.record.RecordCache;
-import com.fanpics.app.event.SuccessEvent;
-import com.fanpics.app.ui.NewRelicManager;
+import com.fanpics.opensource.android.modelrecord.RecordCache;
+import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.squareup.otto.Bus;
 
 import java.util.List;
@@ -15,20 +14,20 @@ import retrofit.client.Response;
 
 public class LoadListCallback<T> extends BaseRecordCallback implements Callback<List<T>> {
 
-    protected com.fanpics.app.data.api.record.callback.MultiRecordSettings<T> settings;
+    protected MultiRecordSettings<T> settings;
     protected Object key;
 
-    protected LoadListCallback(com.fanpics.app.data.api.record.callback.MultiRecordSettings<T> settings, Bus bus, NewRelicManager newRelicManager){
+    protected LoadListCallback(MultiRecordSettings<T> settings, Bus bus, NewRelicManager newRelicManager){
         super(bus, newRelicManager);
         this.settings = settings;
     }
 
-    protected LoadListCallback(com.fanpics.app.data.api.record.callback.MultiRecordSettings settings, Bus bus, NewRelicManager newRelicManager, Handler handler) {
+    protected LoadListCallback(MultiRecordSettings settings, Bus bus, NewRelicManager newRelicManager, Handler handler) {
         super(bus, newRelicManager, handler);
         this.settings = settings;
     }
 
-    public static LoadListCallback createFromSettings(com.fanpics.app.data.api.record.callback.MultiRecordSettings settings, Bus bus, NewRelicManager newRelicManager, Handler handler) {
+    public static LoadListCallback createFromSettings(MultiRecordSettings settings, Bus bus, NewRelicManager newRelicManager, Handler handler) {
         return new LoadListCallback(settings, bus, newRelicManager, handler);
     }
 
