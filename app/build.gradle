@@ -28,9 +28,9 @@ dependencies {
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "file:////Users/elliot/.m2/repository")
+            repository(url: "file:////Users/gabriel/.m2/repository")
             pom.groupId = 'com.fanpics.opensource'
-            pom.artifactId = 'recordmodel'
+            pom.artifactId = 'model-record'
             pom.version = '0.0.1'
         }
     }

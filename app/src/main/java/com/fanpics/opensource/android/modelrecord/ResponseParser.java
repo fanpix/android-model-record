@@ -12,10 +12,17 @@ import retrofit.converter.GsonConverter;
 public class ResponseParser<T> {
     private final Response response;
     private final Type type;
+    private String dateFormat;
 
     public ResponseParser(Response response, Type type) {
         this.response = response;
         this.type = type;
+    }
+
+    public ResponseParser(Response response, Type type, String dateFormat) {
+        this.response = response;
+        this.type = type;
+        this.dateFormat = dateFormat;
     }
 
     public Result<T> parse() {
@@ -28,8 +35,20 @@ public class ResponseParser<T> {
     }
 
     private T parseFromResponse() throws ConversionException {
-        final Gson gson = new GsonBuilder().setDateFormat(DateUtils.COMPACT_DATE_PATTERN).create();
+        final Gson gson = getGson();
         final GsonConverter converter = new GsonConverter(gson);
         return (T) converter.fromBody(response.getBody(), type);
+    }
+
+    public Gson getGson() {
+        Gson gson;
+
+        if (dateFormat != null) {
+            gson = new GsonBuilder().setDateFormat(dateFormat).create();
+        } else {
+            gson = new GsonBuilder().create();
+        }
+
+        return gson;
     }
 }
