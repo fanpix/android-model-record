@@ -19,7 +19,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(JUnit4.class)
 public class RecordCallbackTest {
 
     private RecordCallback<Object> recordCallback;

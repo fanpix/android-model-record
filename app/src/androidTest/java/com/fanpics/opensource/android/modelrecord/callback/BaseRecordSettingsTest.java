@@ -11,7 +11,6 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@RunWith(JUnit4.class)
 public class BaseRecordSettingsTest {
 
     private BaseRecordSettings recordCallbackSettings;

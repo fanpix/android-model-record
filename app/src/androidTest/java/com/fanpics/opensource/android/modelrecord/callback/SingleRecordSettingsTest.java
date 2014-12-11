@@ -11,7 +11,6 @@ import org.junit.runners.JUnit4;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-@RunWith(JUnit4.class)
 public class SingleRecordSettingsTest {
 
     private SingleRecordSettings singleRecordSettings;

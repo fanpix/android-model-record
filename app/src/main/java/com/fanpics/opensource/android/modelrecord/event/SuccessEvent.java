@@ -23,7 +23,7 @@ public class SuccessEvent<T> {
         return resultLoaded;
     }
 
-    protected void clearResult() {
+    public void clearResult() {
         result = null;
     }
 
