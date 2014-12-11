@@ -1,0 +1,4 @@
+<manifest package="com.fanpics.opensource.android.modelrecord">
+    <application name="android.app.Application"/>
+
+</manifest>
