@@ -1,4 +1,4 @@
-package com.fanpics.opensource.android.modelrecord.callback;
+package com.fanpics.opensource.android.modelrecord.settings;
 
 import com.fanpics.opensource.android.modelrecord.RecordCache;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;

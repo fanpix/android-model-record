@@ -1,5 +1,7 @@
-package com.fanpics.opensource.android.modelrecord.callback;
+package com.fanpics.opensource.android.modelrecord.settings;
 
+import com.fanpics.opensource.android.modelrecord.callback.FailureCallback;
+import com.fanpics.opensource.android.modelrecord.callback.SuccessCallback;
 import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
 
 import org.junit.Before;

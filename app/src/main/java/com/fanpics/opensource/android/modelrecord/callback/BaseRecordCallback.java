@@ -29,18 +29,6 @@ public abstract class BaseRecordCallback {
         this.handler = handler;
     }
 
-    protected void sendHttpReport(Response response) {
-        if (response != null && httpReport != null) {
-            final String url = response.getUrl();
-            final int status = response.getStatus();
-            final long startTime = getRecordCallbackSettings().getStartTime();
-            final long currentTime = new Date().getTime();
-            httpReport.reportHttpSuccess(url, status, startTime, currentTime, response);
-        }
-    }
-
-    protected abstract BaseRecordSettings getRecordCallbackSettings();
-
     protected void postSuccessEvent(SuccessEvent event) {
         final Runnable successRunnable = createSuccessRunnable(event);
 
@@ -93,6 +81,16 @@ public abstract class BaseRecordCallback {
         }
     }
 
+    protected void sendHttpReport(Response response) {
+        if (response != null && httpReport != null) {
+            final String url = response.getUrl();
+            final int status = response.getStatus();
+            final long startTime = getRecordCallbackSettings().getStartTime();
+            final long currentTime = new Date().getTime();
+            httpReport.reportHttpSuccess(url, status, startTime, currentTime, response);
+        }
+    }
+
     private void postFailureEvent() {
         final Runnable failureRunnable = createFailureRunnable();
 
@@ -116,4 +114,6 @@ public abstract class BaseRecordCallback {
     public void disableCaching() {
         getRecordCallbackSettings().removeCache();
     }
+
+    protected abstract BaseRecordSettings getRecordCallbackSettings();
 }
