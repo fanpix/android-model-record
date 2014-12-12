@@ -19,9 +19,7 @@ public class ResponseParser<T> {
         this.type = type;
     }
 
-    public ResponseParser(Response response, Type type, String dateFormat) {
-        this.response = response;
-        this.type = type;
+    public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
     }
 
