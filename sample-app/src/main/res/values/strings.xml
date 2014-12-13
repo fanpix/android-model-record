@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Sample-app</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="could_not_load">Loading failed, check your connection and press refresh to try again</string>
+
+</resources>

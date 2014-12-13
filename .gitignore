@@ -1,7 +1,9 @@
+.DS_Store
+
+# Android studio config files
+*.iml
 /local.properties
 /.idea
-app/app.iml
-.DS_Store
 
 # Built application files
 *.apk
