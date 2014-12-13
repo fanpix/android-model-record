@@ -2,6 +2,7 @@ package com.fanpics.opensource.android.modelrecord.settings;
 
 import com.fanpics.opensource.android.modelrecord.callback.FailureCallback;
 import com.fanpics.opensource.android.modelrecord.callback.SuccessCallback;
+import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 
 import java.util.Date;
@@ -13,7 +14,7 @@ public abstract class BaseRecordSettings<T> {
     private boolean runSynchronously;
     private SuccessCallback<T> successCallback;
 
-    private Object failureEvent;
+    private FailureEvent failureEvent;
     private FailureCallback failureCallback;
     private final Date createdTime = new Date();
     private Type type;
@@ -61,11 +62,11 @@ public abstract class BaseRecordSettings<T> {
         }
     }
 
-    public void setFailureEvent(Object failureEvent) {
+    public void setFailureEvent(FailureEvent failureEvent) {
         this.failureEvent = failureEvent;
     }
 
-    public Object getFailureEvent() {
+    public FailureEvent getFailureEvent() {
         return failureEvent;
     }
 

@@ -3,6 +3,7 @@ package com.fanpics.opensource.android.modelrecord.callback;
 import android.os.Handler;
 
 import com.fanpics.opensource.android.modelrecord.HttpReport;
+import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
 import com.squareup.otto.Bus;
@@ -54,7 +55,7 @@ public abstract class BaseRecordCallback {
         }
 
         getRecordCallbackSettings().callFailureCallback();
-        postFailureEvent();
+        postFailureEvent(retrofitError);
     }
 
     private void reportHttpFailure(RetrofitError retrofitError) {
@@ -91,8 +92,8 @@ public abstract class BaseRecordCallback {
         }
     }
 
-    private void postFailureEvent() {
-        final Runnable failureRunnable = createFailureRunnable();
+    private void postFailureEvent(RetrofitError retrofitError) {
+        final Runnable failureRunnable = createFailureRunnable(retrofitError);
 
         if (handler != null){
             handler.post(failureRunnable);
@@ -101,11 +102,12 @@ public abstract class BaseRecordCallback {
         }
     }
 
-    private Runnable createFailureRunnable() {
+    private Runnable createFailureRunnable(final RetrofitError retrofitError) {
         return new Runnable() {
             @Override
             public void run() {
-                final Object event = getRecordCallbackSettings().getFailureEvent();
+                final FailureEvent event = getRecordCallbackSettings().getFailureEvent();
+                event.setError(retrofitError);
                 bus.post(event);
             }
         };
