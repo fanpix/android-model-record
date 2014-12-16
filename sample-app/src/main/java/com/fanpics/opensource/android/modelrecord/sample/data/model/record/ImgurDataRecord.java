@@ -4,15 +4,16 @@ import android.content.Context;
 
 import com.fanpics.opensource.android.modelrecord.ModelRecord;
 import com.fanpics.opensource.android.modelrecord.RecordCache;
-import com.fanpics.opensource.android.modelrecord.callback.LoadCallback;
 import com.fanpics.opensource.android.modelrecord.sample.data.cache.ImgurDataCache;
 import com.fanpics.opensource.android.modelrecord.sample.data.model.ImgurData;
 import com.fanpics.opensource.android.modelrecord.sample.data.network.ImgurItemService;
 import com.fanpics.opensource.android.modelrecord.sample.event.ImgurDataLoadFailedEvent;
 import com.fanpics.opensource.android.modelrecord.sample.event.ImgurDataLoadSucceededEvent;
+import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
 import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
 import com.squareup.otto.Bus;
 
+import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 
@@ -37,16 +38,19 @@ public class ImgurDataRecord extends ModelRecord<ImgurData> {
         recordCallbackSettings.setSuccessEvent(new ImgurDataLoadSucceededEvent());
         recordCallbackSettings.setFailureEvent(new ImgurDataLoadFailedEvent());
         recordCallbackSettings.setCache(createCache());
+        recordCallbackSettings.setAsyncServerCall(new BaseRecordSettings.AsyncServerCall() {
+            @Override
+            public void call(Object o, Callback callback) {
+                RestAdapter restAdapter = buildRestAdapter();
+                ImgurItemService service = restAdapter.create(ImgurItemService.class);
+                service.listGallery(10, callback);
+            }
+        });
         return recordCallbackSettings;
     }
 
-    private RecordCache createCache() {
-        return new ImgurDataCache(context);
-    }
-
-    @Override
-    protected void loadOnServerAsynchronously(Object key, LoadCallback loadCallback) {
-        RestAdapter restAdapter = new RestAdapter.Builder()
+    private RestAdapter buildRestAdapter() {
+        return new RestAdapter.Builder()
                 .setEndpoint("https://api.imgur.com/3/")
                 .setRequestInterceptor(new RequestInterceptor() {
                     @Override
@@ -55,8 +59,9 @@ public class ImgurDataRecord extends ModelRecord<ImgurData> {
                     }
                 })
                 .build();
+    }
 
-        ImgurItemService service = restAdapter.create(ImgurItemService.class);
-        service.listGallery(10, loadCallback);
+    private RecordCache createCache() {
+        return new ImgurDataCache(context);
     }
 }

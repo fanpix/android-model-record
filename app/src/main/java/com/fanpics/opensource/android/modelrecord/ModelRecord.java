@@ -43,11 +43,7 @@ public class ModelRecord<T> {
     public void create(T model){
         SingleRecordSettings settings = setupCreateSettings(new SingleRecordSettings<T>(), model);
         final CreateCallback createCallback = CreateCallback.createFromSettings(settings, bus, httpReport);
-        createOnServer(model, createCallback);
-    }
-
-    protected void createOnServer(T model, CreateCallback createCallback) {
-        throw new RuntimeException("createOnServer() must be implemented before calling create");
+        settings.callOnServerAsync(model, createCallback);
     }
 
     protected SingleRecordSettings setupCreateSettings(SingleRecordSettings recordCallbackSettings, T model) {
@@ -57,11 +53,7 @@ public class ModelRecord<T> {
     public void update(T model){
         SingleRecordSettings settings = setupUpdateSettings(new SingleRecordSettings<T>(), model);
         final UpdateCallback updateCallback = UpdateCallback.createFromSettings(settings, bus, httpReport);
-        updateOnServer(model, updateCallback);
-    }
-
-    protected void updateOnServer(T model, UpdateCallback updateCallback) {
-        throw new RuntimeException("updateOnServer() must be implemented before calling update");
+        settings.callOnServerAsync(model, updateCallback);
     }
 
     protected SingleRecordSettings setupUpdateSettings(SingleRecordSettings recordCallbackSettings, T model) {
@@ -130,7 +122,7 @@ public class ModelRecord<T> {
     private List loadListOnServer(Object key, MultiRecordSettings settings) {
         final LoadListCallback loadListCallback = LoadListCallback.createFromSettings(settings, bus, httpReport, handler);
         if (settings.shouldRunSynchronously()){
-            final Result<List> result = loadListOnServerSynchronously(key);
+            final Result<List> result = settings.callOnServerSynchronously(key);
             if(!result.shouldCache()) {
                 loadListCallback.disableCaching();
             }
@@ -138,17 +130,9 @@ public class ModelRecord<T> {
             loadListCallback.synchronousSuccess(result.getModel(), result.getResponse());
             return result.getModel();
         } else {
-            loadListOnServerAsynchronously(key, loadListCallback);
+            settings.callOnServerAsync(key, loadListCallback);
             return null;
         }
-    }
-
-    protected void loadListOnServerAsynchronously(Object key, LoadListCallback loadListCallback) {
-        throw new RuntimeException("loadListOnServerAsynchronously() must be implemented before calling loadList with settings set to asynchronous");
-    }
-
-    protected Result<List> loadListOnServerSynchronously(Object key) {
-        throw new RuntimeException("loadListOnServerSynchronously() must be implemented before calling loadList with settings set to synchronous");
     }
 
     protected MultiRecordSettings setupLoadListSettings(MultiRecordSettings recordCallbackSettings, Object key) {
@@ -213,7 +197,7 @@ public class ModelRecord<T> {
     private Object loadOnServer(Object key, SingleRecordSettings settings) {
         final LoadCallback loadCallback = LoadCallback.createFromSettings(settings, bus, httpReport, key, handler);
         if (settings.shouldRunSynchronously()){
-            final Result result = loadOnServerSynchronously(key);
+            final Result result = settings.callOnServerSynchronously(key);
             if(!result.shouldCache()) {
                 loadCallback.disableCaching();
             }
@@ -221,7 +205,7 @@ public class ModelRecord<T> {
             loadCallback.synchronousSuccess(result.getModel(), result.getResponse());
             return result.getModel();
         } else {
-            loadOnServerAsynchronously(key, loadCallback);
+            settings.callOnServerAsync(key, loadCallback);
             return null;
         }
     }
@@ -238,14 +222,6 @@ public class ModelRecord<T> {
         }
     }
 
-    protected void loadOnServerAsynchronously(Object key, LoadCallback callback) {
-        throw new RuntimeException("loadOnServerAsynchronously() must be implemented before calling load with settings set to asynchronous");
-    }
-
-    protected Result loadOnServerSynchronously(Object key) {
-        throw new RuntimeException("loadOnServerAsynchronously() must be implemented before calling load with settings set to synchronous");
-    }
-
     protected SingleRecordSettings setupLoadSettings(SingleRecordSettings recordCallbackSettings, Object key) {
         throw new RuntimeException("setupLoadSettings() must be implemented before calling load");
     }
@@ -253,11 +229,7 @@ public class ModelRecord<T> {
     public void delete(T model){
         SingleRecordSettings settings = setupDeleteSettings(new SingleRecordSettings(), model);
         final DeleteCallback deleteCallback = DeleteCallback.createFromSettings(settings, bus, httpReport);
-        deleteOnServer(model, deleteCallback);
-    }
-
-    protected void deleteOnServer(T model, DeleteCallback deleteCallback) {
-        throw new RuntimeException("deleteOnServer() must be implemented before calling delete");
+        settings.callOnServerAsync(model, deleteCallback);
     }
 
     protected SingleRecordSettings setupDeleteSettings(SingleRecordSettings recordCallbackSettings, T model) {

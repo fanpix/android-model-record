@@ -1,14 +1,13 @@
 package com.fanpics.opensource.android.modelrecord.callback;
 
 import com.fanpics.opensource.android.modelrecord.RecordCache;
+import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
 import com.squareup.otto.Bus;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import retrofit.RetrofitError;
 
@@ -98,7 +97,7 @@ public class RecordCallbackTest {
 
     @Test
     public void testFailure() {
-        final Object event = new Object();
+        final FailureEvent event = mock(FailureEvent.class);
 
         when(recordCallback.settings.getFailureEvent()).thenReturn(event);
         doCallRealMethod().when(recordCallback).postFailure(any(RetrofitError.class));

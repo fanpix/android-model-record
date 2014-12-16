@@ -7,6 +7,7 @@ import com.fanpics.opensource.android.modelrecord.callback.DeleteCallback;
 import com.fanpics.opensource.android.modelrecord.callback.LoadCallback;
 import com.fanpics.opensource.android.modelrecord.callback.LoadListCallback;
 import com.fanpics.opensource.android.modelrecord.callback.UpdateCallback;
+import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.fanpics.opensource.android.modelrecord.settings.MultiRecordSettings;
 import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
@@ -15,7 +16,6 @@ import com.squareup.otto.Bus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.robolectric.RobolectricTestRunner;
 
@@ -58,13 +58,13 @@ public class ModelRecordTest {
     private void setupSettings(SingleRecordSettings settings) {
         when(settings.getCache()).thenReturn(cache);
         when(settings.getSuccessEvent()).thenReturn(mock(SuccessEvent.class));
-        when(settings.getFailureEvent()).thenReturn(mock(Object.class));
+        when(settings.getFailureEvent()).thenReturn(mock(FailureEvent.class));
     }
 
     private void setupSettings(MultiRecordSettings settings) {
         when(settings.getCache()).thenReturn(cache);
         when(settings.getSuccessEvent()).thenReturn(mock(SuccessEvent.class));
-        when(settings.getFailureEvent()).thenReturn(mock(Object.class));
+        when(settings.getFailureEvent()).thenReturn(mock(FailureEvent.class));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ModelRecordTest {
 
         assertThat(singleRecordSettings.getSuccessEvent().hasFinished());
         verify(modelRecord).setupLoadSettings(any(SingleRecordSettings.class), eq(object));
-        verify(modelRecord).loadOnServerAsynchronously(eq(object), any(LoadCallback.class));
+        verify(singleRecordSettings).callOnServerAsync(eq(object), any(LoadCallback.class));
         verify(cache, never()).load(eq(object));
     }
 
@@ -106,7 +106,7 @@ public class ModelRecordTest {
         assertThat(singleRecordSettings.getSuccessEvent().hasFinished());
         verify(cache).load(object);
         verify(modelRecord.bus).post(singleRecordSettings.getSuccessEvent());
-        verify(modelRecord).loadOnServerAsynchronously(eq(object), any(LoadCallback.class));
+        verify(singleRecordSettings).callOnServerAsync(eq(object), any(LoadCallback.class));
     }
 
     @Test
@@ -129,7 +129,7 @@ public class ModelRecordTest {
         assertThat(singleRecordSettings.getSuccessEvent().hasFinished());
         verify(cache).load(object);
         verify(modelRecord.bus).post(singleRecordSettings.getSuccessEvent());
-        verify(modelRecord, never()).loadOnServerAsynchronously(eq(object), any(LoadCallback.class));
+        verify(singleRecordSettings, never()).callOnServerAsync(eq(object), any(LoadCallback.class));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class ModelRecordTest {
         modelRecord.loadList(object, new MultiRecordSettings(MultiRecordSettings.Type.LOAD));
 
         verify(modelRecord).setupLoadListSettings(any(MultiRecordSettings.class), any(Object.class));
-        verify(modelRecord).loadListOnServerAsynchronously(eq(object), any(LoadListCallback.class));
+        verify(multiRecordSettings).callOnServerAsync(eq(object), any(LoadListCallback.class));
         verify(cache, never()).loadList(eq(object));
     }
 
@@ -167,13 +167,13 @@ public class ModelRecordTest {
 
         verify(cache).loadList(object);
         verify(modelRecord.bus).post(multiRecordSettings.getSuccessEvent());
-        verify(modelRecord).loadListOnServerAsynchronously(eq(object), any(LoadListCallback.class));
+        verify(multiRecordSettings).callOnServerAsync(eq(object), any(LoadListCallback.class));
     }
 
     @Test
     public void testLoadingListWithCacheAndNoNetwork() {
         final Object object = new Object();
-        final List<Object> result = new ArrayList<Object>();
+        final List<Object> result = new ArrayList<>();
 
         when(modelRecord.setupLoadListSettings(any(MultiRecordSettings.class), any(Object.class))).thenReturn(multiRecordSettings);
         when(cache.loadList(object)).thenReturn(result);
@@ -188,7 +188,7 @@ public class ModelRecordTest {
 
         verify(cache).loadList(object);
         verify(modelRecord.bus).post(multiRecordSettings.getSuccessEvent());
-        verify(modelRecord, never()).loadListOnServerAsynchronously(eq(object), any(LoadListCallback.class));
+        verify(multiRecordSettings, never()).callOnServerAsync(eq(object), any(LoadListCallback.class));
     }
 
     @Test
@@ -247,30 +247,33 @@ public class ModelRecordTest {
     public void testCreate() {
         final Object object = new Object();
         doCallRealMethod().when(modelRecord).create(object);
+        when(modelRecord.setupCreateSettings(any(SingleRecordSettings.class), eq(object))).thenReturn(singleRecordSettings);
         modelRecord.create(object);
 
         verify(modelRecord).setupCreateSettings(any(SingleRecordSettings.class), eq(object));
-        verify(modelRecord).createOnServer(eq(object), any(CreateCallback.class));
+        verify(singleRecordSettings).callOnServerAsync(eq(object), any(CreateCallback.class));
     }
 
     @Test
     public void testDelete() {
         final Object object = new Object();
+        when(modelRecord.setupDeleteSettings(any(SingleRecordSettings.class), eq(object))).thenReturn(singleRecordSettings);
         doCallRealMethod().when(modelRecord).delete(object);
         modelRecord.delete(object);
 
         verify(modelRecord).setupDeleteSettings(any(SingleRecordSettings.class), eq(object));
-        verify(modelRecord).deleteOnServer(eq(object), any(DeleteCallback.class));
+        verify(singleRecordSettings).callOnServerAsync(eq(object), any(DeleteCallback.class));
     }
 
     @Test
     public void testUpdate() {
         final Object object = new Object();
+        when(modelRecord.setupUpdateSettings(any(SingleRecordSettings.class), eq(object))).thenReturn(singleRecordSettings);
         doCallRealMethod().when(modelRecord).update(object);
         modelRecord.update(object);
 
         verify(modelRecord).setupUpdateSettings(any(SingleRecordSettings.class), eq(object));
-        verify(modelRecord).updateOnServer(eq(object), any(UpdateCallback.class));
+        verify(singleRecordSettings).callOnServerAsync(eq(object), any(UpdateCallback.class));
     }
 
 }

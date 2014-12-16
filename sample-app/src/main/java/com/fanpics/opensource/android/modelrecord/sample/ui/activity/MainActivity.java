@@ -1,7 +1,8 @@
 package com.fanpics.opensource.android.modelrecord.sample.ui.activity;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,12 +11,12 @@ import android.widget.Toast;
 
 import com.fanpics.opensource.android.modelrecord.sample.R;
 import com.fanpics.opensource.android.modelrecord.sample.data.model.ImgurItem;
+import com.fanpics.opensource.android.modelrecord.sample.data.model.record.ImgurDataRecord;
 import com.fanpics.opensource.android.modelrecord.sample.event.ImgurDataLoadFailedEvent;
 import com.fanpics.opensource.android.modelrecord.sample.event.ImgurDataLoadSucceededEvent;
 import com.fanpics.opensource.android.modelrecord.sample.ui.adapter.ImgurAdapter;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-import com.fanpics.opensource.android.modelrecord.sample.data.model.record.ImgurDataRecord;
 
 import java.util.List;
 
@@ -110,6 +111,8 @@ public class MainActivity extends ActionBarActivity {
     public void onListLoadFailed(ImgurDataLoadFailedEvent event) {
         isLoading = false;
         stopReloadAnimation();
+        Log.e("List load failed", "exception", event.getError());
+//        throw new RuntimeException(event.getError());
 
         displayLoadFailedToast();
     }
