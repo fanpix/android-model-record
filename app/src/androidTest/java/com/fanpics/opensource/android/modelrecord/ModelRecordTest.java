@@ -7,10 +7,10 @@ import com.fanpics.opensource.android.modelrecord.callback.DeleteCallback;
 import com.fanpics.opensource.android.modelrecord.callback.LoadCallback;
 import com.fanpics.opensource.android.modelrecord.callback.LoadListCallback;
 import com.fanpics.opensource.android.modelrecord.callback.UpdateCallback;
-import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
-import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.fanpics.opensource.android.modelrecord.configuration.MultiRecordConfiguration;
 import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
+import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
+import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.squareup.otto.Bus;
 
 import org.junit.Before;
@@ -46,25 +46,67 @@ public class ModelRecordTest {
     }
 
     @Before
-    public void createSettings() {
+    public void createConfiguration() {
         singleRecordConfiguration = mock(SingleRecordConfiguration.class);
         multiRecordConfiguration = mock(MultiRecordConfiguration.class);
         cache = mock(RecordCache.class);
 
-        setupSettings(singleRecordConfiguration);
-        setupSettings(multiRecordConfiguration);
+        setupConfiguration(singleRecordConfiguration);
+        setupConfiguration(multiRecordConfiguration);
     }
 
-    private void setupSettings(SingleRecordConfiguration settings) {
-        when(settings.getCache()).thenReturn(cache);
-        when(settings.getSuccessEvent()).thenReturn(mock(SuccessEvent.class));
-        when(settings.getFailureEvent()).thenReturn(mock(FailureEvent.class));
+    private void setupConfiguration(SingleRecordConfiguration configuration) {
+        when(configuration.getCache()).thenReturn(cache);
+        when(configuration.getSuccessEvent()).thenReturn(mock(SuccessEvent.class));
+        when(configuration.getFailureEvent()).thenReturn(mock(FailureEvent.class));
     }
 
-    private void setupSettings(MultiRecordConfiguration settings) {
-        when(settings.getCache()).thenReturn(cache);
-        when(settings.getSuccessEvent()).thenReturn(mock(SuccessEvent.class));
-        when(settings.getFailureEvent()).thenReturn(mock(FailureEvent.class));
+    private void setupConfiguration(MultiRecordConfiguration configuration) {
+        when(configuration.getCache()).thenReturn(cache);
+        when(configuration.getSuccessEvent()).thenReturn(mock(SuccessEvent.class));
+        when(configuration.getFailureEvent()).thenReturn(mock(FailureEvent.class));
+    }
+
+    @Test
+    public void testCreate() {
+        final Object object = new Object();
+        doCallRealMethod().when(modelRecord).create(object);
+        when(modelRecord.setupCreateSettings(any(SingleRecordConfiguration.class), eq(object))).thenReturn(singleRecordConfiguration);
+        modelRecord.create(object);
+
+        verify(modelRecord).setupCreateSettings(any(SingleRecordConfiguration.class), eq(object));
+        verify(singleRecordConfiguration).callOnServerAsync(eq(object), any(CreateCallback.class));
+    }
+
+    @Test
+    public void testUpdate() {
+        final Object object = new Object();
+        when(modelRecord.setupUpdateSettings(any(SingleRecordConfiguration.class), eq(object))).thenReturn(singleRecordConfiguration);
+        doCallRealMethod().when(modelRecord).update(object);
+        modelRecord.update(object);
+
+        verify(modelRecord).setupUpdateSettings(any(SingleRecordConfiguration.class), eq(object));
+        verify(singleRecordConfiguration).callOnServerAsync(eq(object), any(UpdateCallback.class));
+    }
+
+    @Test
+    public void testDelete() {
+        final Object object = new Object();
+        when(modelRecord.setupDeleteSettings(any(SingleRecordConfiguration.class), eq(object))).thenReturn(singleRecordConfiguration);
+        doCallRealMethod().when(modelRecord).delete(object);
+        modelRecord.delete(object);
+
+        verify(modelRecord).setupDeleteSettings(any(SingleRecordConfiguration.class), eq(object));
+        verify(singleRecordConfiguration).callOnServerAsync(eq(object), any(DeleteCallback.class));
+    }
+
+    @Test
+    public void testLoad() {
+        modelRecord = mock(ModelRecord.class);
+        doCallRealMethod().when(modelRecord).load();
+
+        modelRecord.load();
+        verify(modelRecord).load(null);
     }
 
     @Test
@@ -133,6 +175,15 @@ public class ModelRecordTest {
     }
 
     @Test
+    public void testLoadList() {
+        modelRecord = mock(ModelRecord.class);
+        doCallRealMethod().when(modelRecord).loadList();
+
+        modelRecord.loadList();
+        verify(modelRecord).loadList(null);
+    }
+
+    @Test
     public void testLoadingListWithNetworkAndNoCache() {
         final Object object = new Object();
 
@@ -193,6 +244,15 @@ public class ModelRecordTest {
 
     @Test
     public void testRefresh() {
+        modelRecord = mock(ModelRecord.class);
+        doCallRealMethod().when(modelRecord).refresh();
+
+        modelRecord.refresh();
+        verify(modelRecord).refresh(null);
+    }
+
+    @Test
+    public void testRefreshWithKey() {
         final Object key = new Object();
         ArgumentCaptor<SingleRecordConfiguration> settings = ArgumentCaptor.forClass(SingleRecordConfiguration.class);
 
@@ -206,6 +266,15 @@ public class ModelRecordTest {
 
     @Test
     public void testRefreshList() {
+        modelRecord = mock(ModelRecord.class);
+        doCallRealMethod().when(modelRecord).refreshList();
+
+        modelRecord.refreshList();
+        verify(modelRecord).refreshList(null);
+    }
+
+    @Test
+    public void testRefreshListWithKey() {
         final Object key = new Object();
         ArgumentCaptor<MultiRecordConfiguration> settings = ArgumentCaptor.forClass(MultiRecordConfiguration.class);
 
@@ -219,6 +288,15 @@ public class ModelRecordTest {
 
     @Test
     public void testGetPreLoaded() {
+        modelRecord = mock(ModelRecord.class);
+        doCallRealMethod().when(modelRecord).getPreLoaded();
+
+        modelRecord.getPreLoaded();
+        verify(modelRecord).getPreLoaded(null);
+    }
+
+    @Test
+    public void testGetPreLoadedWithKey() {
         final Object key = new Object();
         ArgumentCaptor<SingleRecordConfiguration> settings = ArgumentCaptor.forClass(SingleRecordConfiguration.class);
 
@@ -232,6 +310,15 @@ public class ModelRecordTest {
 
     @Test
     public void testGetPreLoadedList() {
+        modelRecord = mock(ModelRecord.class);
+        doCallRealMethod().when(modelRecord).getPreLoadedList();
+
+        modelRecord.getPreLoadedList();
+        verify(modelRecord).getPreLoadedList(null);
+    }
+
+    @Test
+    public void testGetPreLoadedListWithKey() {
         final Object key = new Object();
         ArgumentCaptor<MultiRecordConfiguration> settings = ArgumentCaptor.forClass(MultiRecordConfiguration.class);
 
@@ -241,39 +328,6 @@ public class ModelRecordTest {
 
         verify(modelRecord).loadListAsynchronously(eq(key), settings.capture());
         assertThat(settings.getValue().getType()).isEqualTo(SingleRecordConfiguration.Type.CACHE_ONLY);
-    }
-
-    @Test
-    public void testCreate() {
-        final Object object = new Object();
-        doCallRealMethod().when(modelRecord).create(object);
-        when(modelRecord.setupCreateSettings(any(SingleRecordConfiguration.class), eq(object))).thenReturn(singleRecordConfiguration);
-        modelRecord.create(object);
-
-        verify(modelRecord).setupCreateSettings(any(SingleRecordConfiguration.class), eq(object));
-        verify(singleRecordConfiguration).callOnServerAsync(eq(object), any(CreateCallback.class));
-    }
-
-    @Test
-    public void testDelete() {
-        final Object object = new Object();
-        when(modelRecord.setupDeleteSettings(any(SingleRecordConfiguration.class), eq(object))).thenReturn(singleRecordConfiguration);
-        doCallRealMethod().when(modelRecord).delete(object);
-        modelRecord.delete(object);
-
-        verify(modelRecord).setupDeleteSettings(any(SingleRecordConfiguration.class), eq(object));
-        verify(singleRecordConfiguration).callOnServerAsync(eq(object), any(DeleteCallback.class));
-    }
-
-    @Test
-    public void testUpdate() {
-        final Object object = new Object();
-        when(modelRecord.setupUpdateSettings(any(SingleRecordConfiguration.class), eq(object))).thenReturn(singleRecordConfiguration);
-        doCallRealMethod().when(modelRecord).update(object);
-        modelRecord.update(object);
-
-        verify(modelRecord).setupUpdateSettings(any(SingleRecordConfiguration.class), eq(object));
-        verify(singleRecordConfiguration).callOnServerAsync(eq(object), any(UpdateCallback.class));
     }
 
 }

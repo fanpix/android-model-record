@@ -25,14 +25,6 @@ public class ImgurDataRecord extends ModelRecord<ImgurData> {
         this.context = context;
     }
 
-    public void load() {
-        load(null);
-    }
-
-    public void refresh() {
-        refresh(null);
-    }
-
     @Override
     protected SingleRecordSettings setupLoadSettings(SingleRecordSettings recordCallbackSettings, Object key) {
         recordCallbackSettings.setSuccessEvent(new ImgurDataLoadSucceededEvent());
