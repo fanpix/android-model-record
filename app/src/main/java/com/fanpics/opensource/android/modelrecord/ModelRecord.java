@@ -20,12 +20,22 @@ public class ModelRecord<T> {
     protected Bus bus;
     protected Handler handler;
 
+    /**
+     *
+     * @param bus Event bus to receive events
+     * @param httpReport Class to receive metadata about http call failures and successes for
+     *                   reporting purposes
+     */
     public ModelRecord(Bus bus, HttpReport httpReport) {
         this.bus = bus;
         this.httpReport = httpReport;
         this.handler = new Handler();
     }
 
+    /**
+     *
+     * @param bus Event bus to receive events
+     */
     public ModelRecord(Bus bus) {
         this.bus = bus;
         this.handler = new Handler();
@@ -40,56 +50,122 @@ public class ModelRecord<T> {
         });
     }
 
+    /**
+     * Creates record in cache/on server
+     *
+     * @param model Object to be persisted
+     */
     public void create(T model){
         SingleRecordConfiguration configuration = setupCreateConfiguration(new SingleRecordConfiguration<T>(), model);
         final CreateCallback createCallback = CreateCallback.createFromConfiguration(configuration, bus, httpReport);
         configuration.performAsynchronousNetworkCall(model, createCallback);
     }
 
+    /**
+     * Prepares configuration for object creation.
+     *
+     * This must be overridden if create is going to be used
+     *
+     * @param configuration Base configuration to build upon. It can be ignored and a new one created if needed.
+     * @param model Object passed in from #create(model)
+     * @return Configuration to set up and place request
+     */
     protected SingleRecordConfiguration setupCreateConfiguration(SingleRecordConfiguration configuration, T model) {
         throw new RuntimeException("SetupCreateConfiguration() must be implemented before calling create");
     }
 
+    /**
+     * Updates record in cache/on server
+     *
+     * @param model Object to be updated
+     */
     public void update(T model){
         SingleRecordConfiguration configuration = setupUpdateConfiguration(new SingleRecordConfiguration<T>(), model);
         final UpdateCallback updateCallback = UpdateCallback.createFromConfiguration(configuration, bus, httpReport);
         configuration.performAsynchronousNetworkCall(model, updateCallback);
     }
 
+    /**
+     * Prepares configuration for object update.
+     *
+     * This must be overridden if update is going to be used
+     *
+     * @param configuration Base configuration to build upon. It can be ignored and a new one created if needed.
+     * @param model Object passed in from #update(Object)
+     * @return Configuration to set up and place request
+     */
+    protected SingleRecordConfiguration setupUpdateConfiguration(SingleRecordConfiguration configuration, T model) {
+        throw new RuntimeException("setupUpdateConfiguration() must be implemented before calling update");
+    }
+
+    /**
+     * Deletes record in cache/on server
+     *
+     * @param model Object to be deleted
+     */
     public void delete(T model){
         SingleRecordConfiguration configuration = setupDeleteConfiguration(new SingleRecordConfiguration(), model);
         final DeleteCallback deleteCallback = DeleteCallback.createFromConfiguration(configuration, bus, httpReport, model);
         configuration.performAsynchronousNetworkCall(model, deleteCallback);
     }
 
+    /**
+     * Prepares configuration for object deletion.
+     *
+     * This must be overridden if delete is going to be used
+     *
+     * @param configuration Base configuration to build upon. It can be ignored and a new one created if needed.
+     * @param model Object passed in from #delete(Object)
+     * @return Configuration to set up and place request
+     */
     protected SingleRecordConfiguration setupDeleteConfiguration(SingleRecordConfiguration configuration, T model) {
         throw new RuntimeException("setupDeleteConfiguration() must be implemented before calling delete");
     }
 
-    protected SingleRecordConfiguration setupUpdateConfiguration(SingleRecordConfiguration configuration, T model) {
-        throw new RuntimeException("setupUpdateConfiguration() must be implemented before calling update");
-    }
-
+    /**
+     * Calls #Load(Object) without a key
+     */
     public void load() {
         load(null);
     }
 
+    /**
+     * Eager loads object from cache if present, then continues to load it from the network
+     *
+     * @param key Key to be sent in load call
+     */
     public void load(Object key) {
         loadAsynchronously(key, new SingleRecordConfiguration<T>(SingleRecordConfiguration.Type.LOAD));
     }
 
+    /**
+     * Calls #refresh(Object) without a key
+     */
     public void refresh() {
         refresh(null);
     }
 
+    /**
+     * Skips cache and loads object from the network
+     *
+     * @param key Key to be sent in load call
+     */
     public void refresh(Object key) {
         loadAsynchronously(key, new SingleRecordConfiguration<T>(SingleRecordConfiguration.Type.REFRESH));
     }
 
+    /**
+     * Calls #getPreLoaded(Object) without a key
+     */
     public void getPreLoaded() {
         getPreLoaded(null);
     }
 
+    /**
+     * Loads object from cache
+     *
+     * @param key Key to be sent in load call
+     */
     public void getPreLoaded(Object key) {
         loadAsynchronously(key, new SingleRecordConfiguration<T>(SingleRecordConfiguration.Type.CACHE_ONLY));
     }
@@ -104,14 +180,46 @@ public class ModelRecord<T> {
         }).start();
     }
 
+    /**
+     * Calls #loadSynchronously(Object) without a key
+     *
+     * @return Loaded object
+     */
     public Object loadSynchronously() {
         return loadSynchronously(null);
     }
 
+    /**
+     * Loads synchronously from cache, and falls back to network on cache miss
+     *
+     * @param key Key to be sent in load call
+     * @return Loaded object
+     */
     public Object loadSynchronously(final Object key) {
         final SingleRecordConfiguration baseConfiguration = new SingleRecordConfiguration<T>(SingleRecordConfiguration.Type.LOAD);
         baseConfiguration.setRunSynchronously();
         return load(key, baseConfiguration);
+    }
+
+    /**
+     * Calls @refreshSynchronously without a key
+     *
+     * @return Loaded object
+     */
+    public Object refreshSynchronously() {
+        return refreshSynchronously(null);
+    }
+
+    /**
+     * Loads object synchronously from network
+     *
+     * @param key Key to be sent in load call
+     * @return Loaded object
+     */
+    public Object refreshSynchronously(final Object key) {
+        final SingleRecordConfiguration configuration = new SingleRecordConfiguration(SingleRecordConfiguration.Type.REFRESH);
+        configuration.setRunSynchronously();
+        return load(key, configuration);
     }
 
     protected Object load(Object key, SingleRecordConfiguration baseConfiguration) {
@@ -157,30 +265,63 @@ public class ModelRecord<T> {
         }
     }
 
+    /**
+     * Prepares configuration for object loading.
+     *
+     * This must be overridden if any singular object load actions are going to be used
+     *
+     * @param configuration Base configuration to build upon. It can be ignored and a new one created if needed.
+     * @param key Key passed in from load command
+     * @return Configuration to set up and place request
+     */
     protected SingleRecordConfiguration setupLoadConfiguration(SingleRecordConfiguration configuration, Object key) {
-        throw new RuntimeException("setupLoadConfiguration() must be implemented before calling load");
+        throw new RuntimeException("setupLoadConfiguration() must be implemented before calling any load methods");
     }
 
+    /**
+     * Calls #loadList(Object) without a key
+     */
     public void loadList() {
         loadList(null);
     }
 
+    /**
+     * Eager loads list from cache if present, then continues to load it from the network
+     *
+     * @param key Key to be sent in load call
+     */
     public void loadList(Object key) {
         loadListAsynchronously(key, new MultiRecordConfiguration<T>(SingleRecordConfiguration.Type.LOAD));
     }
 
+    /**
+     * Calls #refreshList(Object) without a key
+     */
     public void refreshList() {
         refreshList(null);
     }
 
+    /**
+     * Skips cache and loads list from the network
+     *
+     * @param key Key to be sent in load call
+     */
     public void refreshList(Object key) {
         loadListAsynchronously(key, new MultiRecordConfiguration<T>(SingleRecordConfiguration.Type.REFRESH));
     }
 
+    /**
+     * Calls #getPreLoadedList(Object) without a key
+     */
     public void getPreLoadedList() {
         getPreLoadedList(null);
     }
 
+    /**
+     * Loads list from cache
+     *
+     * @param key Key to be sent in load call
+     */
     public void getPreLoadedList(Object key) {
         loadListAsynchronously(key, new MultiRecordConfiguration<T>(SingleRecordConfiguration.Type.CACHE_ONLY));
     }
@@ -194,16 +335,42 @@ public class ModelRecord<T> {
         }).start();
     }
 
+    /**
+     * Calls @loadListSynchronously without a key
+     *
+     * @return Loaded list
+     */
     public List loadListSynchronously() {
         return loadListSynchronously(null);
     }
 
+    /**
+     * Loads list synchronously from cache, and falls back to network on cache miss
+     *
+     * @param key Key to be sent in load call
+     * @return Loaded object
+     */
     public List loadListSynchronously(final Object key) {
         final MultiRecordConfiguration configuration = new MultiRecordConfiguration<T>(MultiRecordConfiguration.Type.LOAD);
         configuration.setRunSynchronously();
         return loadList(key, configuration);
     }
 
+    /**
+     * Calls @refreshListSynchronously without a key
+     *
+     * @return Loaded list
+     */
+    public List refreshListSynchronously() {
+        return refreshListSynchronously(null);
+    }
+
+    /**
+     * Loads list synchronously from network
+     *
+     * @param key Key to be sent in load call
+     * @return Loaded object
+     */
     public List refreshListSynchronously(final Object key) {
         final MultiRecordConfiguration configuration = new MultiRecordConfiguration<T>(MultiRecordConfiguration.Type.REFRESH);
         configuration.setRunSynchronously();
@@ -264,7 +431,16 @@ public class ModelRecord<T> {
         }
     }
 
+    /**
+     * Prepares configuration for list loading.
+     *
+     * This must be overridden if any list load actions are going to be used
+     *
+     * @param configuration Base configuration to build upon. It can be ignored and a new one created if needed.
+     * @param key Key passed in from load list command
+     * @return Configuration to set up and place request
+     */
     protected MultiRecordConfiguration setupLoadListConfiguration(MultiRecordConfiguration configuration, Object key) {
-        throw new RuntimeException("setupLoadListConfiguration() must be implemented before calling loadList");
+        throw new RuntimeException("setupLoadListConfiguration() must be implemented before calling any loadList methods");
     }
 }

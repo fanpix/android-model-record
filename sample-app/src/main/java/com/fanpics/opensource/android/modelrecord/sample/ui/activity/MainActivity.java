@@ -2,7 +2,6 @@ package com.fanpics.opensource.android.modelrecord.sample.ui.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,6 +50,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         bus.unregister(this);
     }
 
@@ -111,8 +111,6 @@ public class MainActivity extends ActionBarActivity {
     public void onListLoadFailed(ImgurDataLoadFailedEvent event) {
         isLoading = false;
         stopReloadAnimation();
-        Log.e("List load failed", "exception", event.getError());
-//        throw new RuntimeException(event.getError());
 
         displayLoadFailedToast();
     }
