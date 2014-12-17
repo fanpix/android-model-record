@@ -87,4 +87,9 @@ public class ImgurDataCache implements RecordCache<ImgurData> {
         query.findAll().clear();
         realm.commitTransaction();
     }
+
+    @Override
+    public void delete(ImgurData object) {
+
+    }
 }

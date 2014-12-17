@@ -4,13 +4,13 @@ import android.content.Context;
 
 import com.fanpics.opensource.android.modelrecord.ModelRecord;
 import com.fanpics.opensource.android.modelrecord.RecordCache;
+import com.fanpics.opensource.android.modelrecord.configuration.BaseRecordConfiguration;
+import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
 import com.fanpics.opensource.android.modelrecord.sample.data.cache.ImgurDataCache;
 import com.fanpics.opensource.android.modelrecord.sample.data.model.ImgurData;
 import com.fanpics.opensource.android.modelrecord.sample.data.network.ImgurItemService;
 import com.fanpics.opensource.android.modelrecord.sample.event.ImgurDataLoadFailedEvent;
 import com.fanpics.opensource.android.modelrecord.sample.event.ImgurDataLoadSucceededEvent;
-import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
-import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
 import com.squareup.otto.Bus;
 
 import retrofit.Callback;
@@ -26,11 +26,11 @@ public class ImgurDataRecord extends ModelRecord<ImgurData> {
     }
 
     @Override
-    protected SingleRecordSettings setupLoadSettings(SingleRecordSettings recordCallbackSettings, Object key) {
-        recordCallbackSettings.setSuccessEvent(new ImgurDataLoadSucceededEvent());
-        recordCallbackSettings.setFailureEvent(new ImgurDataLoadFailedEvent());
-        recordCallbackSettings.setCache(createCache());
-        recordCallbackSettings.setAsyncServerCall(new BaseRecordSettings.AsyncServerCall() {
+    protected SingleRecordConfiguration setupLoadSettings(SingleRecordConfiguration configuration, Object key) {
+        configuration.setSuccessEvent(new ImgurDataLoadSucceededEvent());
+        configuration.setFailureEvent(new ImgurDataLoadFailedEvent());
+        configuration.setCache(createCache());
+        configuration.setAsyncServerCall(new BaseRecordConfiguration.AsyncServerCall() {
             @Override
             public void call(Object o, Callback callback) {
                 RestAdapter restAdapter = buildRestAdapter();
@@ -38,7 +38,7 @@ public class ImgurDataRecord extends ModelRecord<ImgurData> {
                 service.listGallery(10, callback);
             }
         });
-        return recordCallbackSettings;
+        return configuration;
     }
 
     private RestAdapter buildRestAdapter() {
