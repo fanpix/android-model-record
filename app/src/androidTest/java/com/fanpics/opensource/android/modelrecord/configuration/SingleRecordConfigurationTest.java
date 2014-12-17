@@ -26,7 +26,7 @@ public class SingleRecordConfigurationTest {
 
         singleRecordConfiguration.setCache(mock(RecordCache.class));
         assertThat(singleRecordConfiguration.shouldLoadFromCache()).isTrue();
-        assertThat(singleRecordConfiguration.shouldLoadFromServer()).isTrue();
+        assertThat(singleRecordConfiguration.shouldLoadFromNetwork()).isTrue();
     }
 
     @Test
@@ -43,7 +43,7 @@ public class SingleRecordConfigurationTest {
 
         singleRecordConfiguration.setCache(mock(RecordCache.class));
         assertThat(singleRecordConfiguration.shouldLoadFromCache()).isFalse();
-        assertThat(singleRecordConfiguration.shouldLoadFromServer()).isTrue();
+        assertThat(singleRecordConfiguration.shouldLoadFromNetwork()).isTrue();
     }
 
     @Test
@@ -80,7 +80,7 @@ public class SingleRecordConfigurationTest {
 
         singleRecordConfiguration.setCache(mock(RecordCache.class));
         assertThat(singleRecordConfiguration.shouldLoadFromCache()).isTrue();
-        assertThat(singleRecordConfiguration.shouldLoadFromServer()).isTrue();
+        assertThat(singleRecordConfiguration.shouldLoadFromNetwork()).isTrue();
     }
 
     @Test
@@ -92,6 +92,6 @@ public class SingleRecordConfigurationTest {
         event.setResult(new Object());
         singleRecordConfiguration.setCache(mock(RecordCache.class));
         assertThat(singleRecordConfiguration.shouldLoadFromCache()).isTrue();
-        assertThat(singleRecordConfiguration.shouldLoadFromServer()).isFalse();
+        assertThat(singleRecordConfiguration.shouldLoadFromNetwork()).isFalse();
     }
 }

@@ -29,7 +29,7 @@ public class RecordCallbackTest {
         recordCallback.settings = mock(SingleRecordConfiguration.class);
         recordCallback.bus = mock(Bus.class);
         cache = mock(RecordCache.class);
-        when(recordCallback.getRecordCallbackSettings()).thenCallRealMethod();
+        when(recordCallback.getRecordConfiguration()).thenCallRealMethod();
         when(recordCallback.settings.getCache()).thenReturn(cache);
     }
 

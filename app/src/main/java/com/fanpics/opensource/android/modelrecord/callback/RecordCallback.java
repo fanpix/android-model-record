@@ -15,17 +15,17 @@ import retrofit.client.Response;
 
 public class RecordCallback<T> extends BaseRecordCallback implements Callback<T> {
 
-    protected SingleRecordConfiguration<T> settings;
+    protected SingleRecordConfiguration<T> configuration;
     protected Object key;
 
-    protected RecordCallback(SingleRecordConfiguration<T> settings, Bus bus, HttpReport httpReport){
+    protected RecordCallback(SingleRecordConfiguration<T> configuration, Bus bus, HttpReport httpReport){
         super(bus, httpReport);
-        this.settings = settings;
+        this.configuration = configuration;
     }
 
-    public RecordCallback(SingleRecordConfiguration<T> settings, Bus bus, HttpReport httpReport, Handler handler) {
+    public RecordCallback(SingleRecordConfiguration<T> configuration, Bus bus, HttpReport httpReport, Handler handler) {
         super(bus, httpReport, handler);
-        this.settings = settings;
+        this.configuration = configuration;
     }
 
     public void setKey(Object key) {
@@ -46,13 +46,13 @@ public class RecordCallback<T> extends BaseRecordCallback implements Callback<T>
     }
 
     private void success(T model, Response response, boolean shouldPostResult) {
-        final SuccessEvent<T> event = settings.getSuccessEvent();
+        final SuccessEvent<T> event = configuration.getSuccessEvent();
 
         event.setResult(model);
         event.setHasFinished(true);
         runCacheThread(model);
         sendHttpReport(response);
-        settings.callSuccessCallback(model);
+        configuration.callSuccessCallback(model);
 
         if (shouldPostResult) {
             postSuccessEvent(event);
@@ -69,7 +69,7 @@ public class RecordCallback<T> extends BaseRecordCallback implements Callback<T>
     }
 
     protected void manageCacheIfExists(T model) {
-        final RecordCache<T> cache = settings.getCache();
+        final RecordCache<T> cache = configuration.getCache();
         if (cache != null) {
             cache.store(key, model);
         }
@@ -81,7 +81,7 @@ public class RecordCallback<T> extends BaseRecordCallback implements Callback<T>
     }
 
     @Override
-    protected BaseRecordConfiguration getRecordCallbackSettings() {
-        return settings;
+    protected BaseRecordConfiguration getRecordConfiguration() {
+        return configuration;
     }
 }

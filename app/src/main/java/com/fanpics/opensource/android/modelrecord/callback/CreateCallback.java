@@ -6,11 +6,11 @@ import com.squareup.otto.Bus;
 
 public class CreateCallback<T> extends RecordCallback<T> {
 
-    protected CreateCallback(SingleRecordConfiguration settings, Bus bus, HttpReport httpReport) {
-        super(settings, bus, httpReport);
+    protected CreateCallback(SingleRecordConfiguration configuration, Bus bus, HttpReport httpReport) {
+        super(configuration, bus, httpReport);
     }
 
-    public static <T> CreateCallback<T> createFromSettings(SingleRecordConfiguration settings, Bus bus, HttpReport httpReport){
-        return new CreateCallback<T>(settings, bus, httpReport);
+    public static <T> CreateCallback<T> createFromConfiguration(SingleRecordConfiguration configuration, Bus bus, HttpReport httpReport){
+        return new CreateCallback<T>(configuration, bus, httpReport);
     }
 }

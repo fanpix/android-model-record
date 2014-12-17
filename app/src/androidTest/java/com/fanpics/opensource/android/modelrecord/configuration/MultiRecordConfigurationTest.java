@@ -26,7 +26,7 @@ public class MultiRecordConfigurationTest {
 
         multiRecordConfiguration.setCache(mock(RecordCache.class));
         assertThat(multiRecordConfiguration.shouldLoadFromCache()).isTrue();
-        assertThat(multiRecordConfiguration.shouldLoadFromServer()).isTrue();
+        assertThat(multiRecordConfiguration.shouldLoadFromNetwork()).isTrue();
     }
 
     @Test
@@ -43,7 +43,7 @@ public class MultiRecordConfigurationTest {
 
         multiRecordConfiguration.setCache(mock(RecordCache.class));
         assertThat(multiRecordConfiguration.shouldLoadFromCache()).isFalse();
-        assertThat(multiRecordConfiguration.shouldLoadFromServer()).isTrue();
+        assertThat(multiRecordConfiguration.shouldLoadFromNetwork()).isTrue();
     }
 
     @Test
@@ -80,7 +80,7 @@ public class MultiRecordConfigurationTest {
 
         multiRecordConfiguration.setCache(mock(RecordCache.class));
         assertThat(multiRecordConfiguration.shouldLoadFromCache()).isTrue();
-        assertThat(multiRecordConfiguration.shouldLoadFromServer()).isTrue();
+        assertThat(multiRecordConfiguration.shouldLoadFromNetwork()).isTrue();
     }
 
     @Test
@@ -92,6 +92,6 @@ public class MultiRecordConfigurationTest {
         event.setResult(new Object());
         multiRecordConfiguration.setCache(mock(RecordCache.class));
         assertThat(multiRecordConfiguration.shouldLoadFromCache()).isTrue();
-        assertThat(multiRecordConfiguration.shouldLoadFromServer()).isFalse();
+        assertThat(multiRecordConfiguration.shouldLoadFromNetwork()).isFalse();
     }
 }

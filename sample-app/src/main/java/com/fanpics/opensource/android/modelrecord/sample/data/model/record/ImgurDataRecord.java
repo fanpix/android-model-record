@@ -26,11 +26,11 @@ public class ImgurDataRecord extends ModelRecord<ImgurData> {
     }
 
     @Override
-    protected SingleRecordConfiguration setupLoadSettings(SingleRecordConfiguration configuration, Object key) {
+    protected SingleRecordConfiguration setupLoadConfiguration(SingleRecordConfiguration configuration, Object key) {
         configuration.setSuccessEvent(new ImgurDataLoadSucceededEvent());
         configuration.setFailureEvent(new ImgurDataLoadFailedEvent());
         configuration.setCache(createCache());
-        configuration.setAsyncServerCall(new BaseRecordConfiguration.AsyncServerCall() {
+        configuration.setAsynchronousNetworkCall(new BaseRecordConfiguration.AsyncNetworkCall() {
             @Override
             public void call(Object o, Callback callback) {
                 RestAdapter restAdapter = buildRestAdapter();

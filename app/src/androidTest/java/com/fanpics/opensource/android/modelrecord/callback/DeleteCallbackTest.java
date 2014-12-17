@@ -30,7 +30,7 @@ public class DeleteCallbackTest {
     @Test
     public void testFailureWithoutCache() {
         final Object model = new Object();
-        DeleteCallback<Object> deleteCallback = DeleteCallback.createFromSettings(settings, bus, null, model);
+        DeleteCallback<Object> deleteCallback = DeleteCallback.createFromConfiguration(settings, bus, null, model);
         when(settings.getFailureEvent()).thenReturn(new FailureEvent());
         when(deleteCallback.settings.getCache()).thenReturn(null);
 
@@ -42,7 +42,7 @@ public class DeleteCallbackTest {
     @Test
     public void testSuccessWithCache() {
         final Object model = new Object();
-        DeleteCallback<Object> deleteCallback = DeleteCallback.createFromSettings(settings, bus, null, model);
+        DeleteCallback<Object> deleteCallback = DeleteCallback.createFromConfiguration(settings, bus, null, model);
         when(settings.getSuccessEvent()).thenReturn(new SuccessEvent());
         when(deleteCallback.settings.getCache()).thenReturn(cache);
 

@@ -41,33 +41,33 @@ public class ModelRecord<T> {
     }
 
     public void create(T model){
-        SingleRecordConfiguration configuration = setupCreateSettings(new SingleRecordConfiguration<T>(), model);
-        final CreateCallback createCallback = CreateCallback.createFromSettings(configuration, bus, httpReport);
-        configuration.callOnServerAsync(model, createCallback);
+        SingleRecordConfiguration configuration = setupCreateConfiguration(new SingleRecordConfiguration<T>(), model);
+        final CreateCallback createCallback = CreateCallback.createFromConfiguration(configuration, bus, httpReport);
+        configuration.performAsynchronousNetworkCall(model, createCallback);
     }
 
-    protected SingleRecordConfiguration setupCreateSettings(SingleRecordConfiguration configuration, T model) {
-        throw new RuntimeException("SetupCreateSettings() must be implemented before calling create");
+    protected SingleRecordConfiguration setupCreateConfiguration(SingleRecordConfiguration configuration, T model) {
+        throw new RuntimeException("SetupCreateConfiguration() must be implemented before calling create");
     }
 
     public void update(T model){
-        SingleRecordConfiguration configuration = setupUpdateSettings(new SingleRecordConfiguration<T>(), model);
-        final UpdateCallback updateCallback = UpdateCallback.createFromSettings(configuration, bus, httpReport);
-        configuration.callOnServerAsync(model, updateCallback);
+        SingleRecordConfiguration configuration = setupUpdateConfiguration(new SingleRecordConfiguration<T>(), model);
+        final UpdateCallback updateCallback = UpdateCallback.createFromConfiguration(configuration, bus, httpReport);
+        configuration.performAsynchronousNetworkCall(model, updateCallback);
     }
 
     public void delete(T model){
-        SingleRecordConfiguration configuration = setupDeleteSettings(new SingleRecordConfiguration(), model);
-        final DeleteCallback deleteCallback = DeleteCallback.createFromSettings(configuration, bus, httpReport, model);
-        configuration.callOnServerAsync(model, deleteCallback);
+        SingleRecordConfiguration configuration = setupDeleteConfiguration(new SingleRecordConfiguration(), model);
+        final DeleteCallback deleteCallback = DeleteCallback.createFromConfiguration(configuration, bus, httpReport, model);
+        configuration.performAsynchronousNetworkCall(model, deleteCallback);
     }
 
-    protected SingleRecordConfiguration setupDeleteSettings(SingleRecordConfiguration configuration, T model) {
-        throw new RuntimeException("setupDeleteSettings() must be implemented before calling delete");
+    protected SingleRecordConfiguration setupDeleteConfiguration(SingleRecordConfiguration configuration, T model) {
+        throw new RuntimeException("setupDeleteConfiguration() must be implemented before calling delete");
     }
 
-    protected SingleRecordConfiguration setupUpdateSettings(SingleRecordConfiguration configuration, T model) {
-        throw new RuntimeException("setupUpdateSettings() must be implemented before calling update");
+    protected SingleRecordConfiguration setupUpdateConfiguration(SingleRecordConfiguration configuration, T model) {
+        throw new RuntimeException("setupUpdateConfiguration() must be implemented before calling update");
     }
 
     public void load() {
@@ -94,12 +94,12 @@ public class ModelRecord<T> {
         loadAsynchronously(key, new SingleRecordConfiguration<T>(SingleRecordConfiguration.Type.CACHE_ONLY));
     }
 
-    protected void loadAsynchronously(final Object key, final SingleRecordConfiguration configuration){
+    protected void loadAsynchronously(final Object key, final SingleRecordConfiguration baseConfiguration){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                configuration.setRunAsynchronously();
-                load(key, configuration);
+                baseConfiguration.setRunAsynchronously();
+                load(key, baseConfiguration);
             }
         }).start();
     }
@@ -109,23 +109,23 @@ public class ModelRecord<T> {
     }
 
     public Object loadSynchronously(final Object key) {
-        final SingleRecordConfiguration configuration = new SingleRecordConfiguration<T>(SingleRecordConfiguration.Type.LOAD);
-        configuration.setRunSynchronously();
-        return load(key, configuration);
+        final SingleRecordConfiguration baseConfiguration = new SingleRecordConfiguration<T>(SingleRecordConfiguration.Type.LOAD);
+        baseConfiguration.setRunSynchronously();
+        return load(key, baseConfiguration);
     }
 
-    protected Object load(Object key, SingleRecordConfiguration configuration) {
-        SingleRecordConfiguration settings = setupLoadSettings(configuration, key);
+    protected Object load(Object key, SingleRecordConfiguration baseConfiguration) {
+        SingleRecordConfiguration configuration = setupLoadConfiguration(baseConfiguration, key);
 
-        if (settings.shouldLoadFromCache()) {
-            final Object loadedObject = loadFromCache(key, settings);
-            if (loadedObject != null && settings.shouldRunSynchronously()) {
+        if (configuration.shouldLoadFromCache()) {
+            final Object loadedObject = loadFromCache(key, configuration);
+            if (loadedObject != null && configuration.shouldRunSynchronously()) {
                 return loadedObject;
             }
         }
 
-        if (settings.shouldLoadFromServer()) {
-            return loadOnServer(key, settings);
+        if (configuration.shouldLoadFromNetwork()) {
+            return loadOnNetwork(key, configuration);
         }
 
         return null;
@@ -141,10 +141,10 @@ public class ModelRecord<T> {
         return object;
     }
 
-    private Object loadOnServer(Object key, SingleRecordConfiguration configuration) {
-        final LoadCallback loadCallback = LoadCallback.createFromSettings(configuration, bus, httpReport, key, handler);
+    private Object loadOnNetwork(Object key, SingleRecordConfiguration configuration) {
+        final LoadCallback loadCallback = LoadCallback.createFromConfiguration(configuration, bus, httpReport, key, handler);
         if (configuration.shouldRunSynchronously()){
-            final Result result = configuration.callOnServerSynchronously(key);
+            final Result result = configuration.performSynchronousNetworkCall(key);
             if(!result.shouldCache()) {
                 loadCallback.disableCaching();
             }
@@ -152,13 +152,13 @@ public class ModelRecord<T> {
             loadCallback.synchronousSuccess(result.getModel(), result.getResponse());
             return result.getModel();
         } else {
-            configuration.callOnServerAsync(key, loadCallback);
+            configuration.performAsynchronousNetworkCall(key, loadCallback);
             return null;
         }
     }
 
-    protected SingleRecordConfiguration setupLoadSettings(SingleRecordConfiguration configuration, Object key) {
-        throw new RuntimeException("setupLoadSettings() must be implemented before calling load");
+    protected SingleRecordConfiguration setupLoadConfiguration(SingleRecordConfiguration configuration, Object key) {
+        throw new RuntimeException("setupLoadConfiguration() must be implemented before calling load");
     }
 
     public void loadList() {
@@ -210,17 +210,17 @@ public class ModelRecord<T> {
         return loadList(key, configuration);
     }
 
-    protected List loadList(Object key, MultiRecordConfiguration configuration) {
-        MultiRecordConfiguration settings = setupLoadListSettings(configuration, key);
-        if(settings.shouldLoadFromCache()) {
-            final List loadedObject = loadListFromCache(key, settings);
-            if (loadedObject != null && settings.shouldRunSynchronously()) {
+    protected List loadList(Object key, MultiRecordConfiguration baseConfiguration) {
+        MultiRecordConfiguration configuration = setupLoadListConfiguration(baseConfiguration, key);
+        if(configuration.shouldLoadFromCache()) {
+            final List loadedObject = loadListFromCache(key, configuration);
+            if (loadedObject != null && configuration.shouldRunSynchronously()) {
                 return loadedObject;
             }
         }
 
-        if(settings.shouldLoadFromServer()) {
-            return loadListOnServer(key, settings);
+        if(configuration.shouldLoadFromNetwork()) {
+            return loadListOnNetwork(key, configuration);
         }
 
         return null;
@@ -236,10 +236,10 @@ public class ModelRecord<T> {
         return object;
     }
 
-    private List loadListOnServer(Object key, MultiRecordConfiguration configuration) {
-        final LoadListCallback loadListCallback = LoadListCallback.createFromSettings(configuration, bus, httpReport, handler);
+    private List loadListOnNetwork(Object key, MultiRecordConfiguration configuration) {
+        final LoadListCallback loadListCallback = LoadListCallback.createFromConfiguration(configuration, bus, httpReport, handler);
         if (configuration.shouldRunSynchronously()){
-            final Result<List> result = configuration.callOnServerSynchronously(key);
+            final Result<List> result = configuration.performSynchronousNetworkCall(key);
             if(!result.shouldCache()) {
                 loadListCallback.disableCaching();
             }
@@ -247,7 +247,7 @@ public class ModelRecord<T> {
             loadListCallback.synchronousSuccess(result.getModel(), result.getResponse());
             return result.getModel();
         } else {
-            configuration.callOnServerAsync(key, loadListCallback);
+            configuration.performAsynchronousNetworkCall(key, loadListCallback);
             return null;
         }
     }
@@ -255,16 +255,16 @@ public class ModelRecord<T> {
     private void postLoadedObject(Object object, BaseRecordConfiguration configuration) {
         if (object != null) {
             final SuccessEvent event = configuration.getSuccessEvent();
-            event.setHasFinished(!configuration.shouldLoadFromServer());
+            event.setHasFinished(!configuration.shouldLoadFromNetwork());
             event.setResult(object);
             postOnMainThread(event);
-        } else if (!configuration.shouldLoadFromServer()) {
+        } else if (!configuration.shouldLoadFromNetwork()) {
             final Object event = configuration.getFailureEvent();
             postOnMainThread(event);
         }
     }
 
-    protected MultiRecordConfiguration setupLoadListSettings(MultiRecordConfiguration configuration, Object key) {
-        throw new RuntimeException("setupLoadListSettings() must be implemented before calling loadList");
+    protected MultiRecordConfiguration setupLoadListConfiguration(MultiRecordConfiguration configuration, Object key) {
+        throw new RuntimeException("setupLoadListConfiguration() must be implemented before calling loadList");
     }
 }

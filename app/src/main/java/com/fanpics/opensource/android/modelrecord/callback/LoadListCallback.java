@@ -17,20 +17,20 @@ import retrofit.client.Response;
 
 public class LoadListCallback<T> extends BaseRecordCallback implements Callback<List<T>> {
 
-    protected MultiRecordConfiguration<T> settings;
+    protected MultiRecordConfiguration<T> configuration;
     protected Object key;
 
-    protected LoadListCallback(MultiRecordConfiguration<T> settings, Bus bus, HttpReport httpReport){
+    protected LoadListCallback(MultiRecordConfiguration<T> configuration, Bus bus, HttpReport httpReport){
         super(bus, httpReport);
-        this.settings = settings;
+        this.configuration = configuration;
     }
 
-    protected LoadListCallback(MultiRecordConfiguration settings, Bus bus, HttpReport httpReport, Handler handler) {
+    protected LoadListCallback(MultiRecordConfiguration configuration, Bus bus, HttpReport httpReport, Handler handler) {
         super(bus, httpReport, handler);
-        this.settings = settings;
+        this.configuration = configuration;
     }
 
-    public static LoadListCallback createFromSettings(MultiRecordConfiguration settings, Bus bus, HttpReport httpReport, Handler handler) {
+    public static LoadListCallback createFromConfiguration(MultiRecordConfiguration settings, Bus bus, HttpReport httpReport, Handler handler) {
         return new LoadListCallback(settings, bus, httpReport, handler);
     }
 
@@ -42,7 +42,7 @@ public class LoadListCallback<T> extends BaseRecordCallback implements Callback<
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final RecordCache<T> cache = settings.getCache();
+                final RecordCache<T> cache = configuration.getCache();
                 if (cache != null) {
                     cache.store(key, model);
                 }
@@ -60,13 +60,13 @@ public class LoadListCallback<T> extends BaseRecordCallback implements Callback<
     }
 
     private void success(List<T> models, Response response, boolean shouldPostResult) {
-        final SuccessEvent<List<T>> event = settings.getSuccessEvent();
+        final SuccessEvent<List<T>> event = configuration.getSuccessEvent();
 
         event.setResult(models);
         event.setHasFinished(true);
         cacheIfExists(models);
         sendHttpReport(response);
-        settings.callSuccessCallback(models);
+        configuration.callSuccessCallback(models);
 
         if (shouldPostResult) {
             postSuccessEvent(event);
@@ -79,7 +79,7 @@ public class LoadListCallback<T> extends BaseRecordCallback implements Callback<
     }
 
     @Override
-    protected BaseRecordConfiguration getRecordCallbackSettings() {
-        return settings;
+    protected BaseRecordConfiguration getRecordConfiguration() {
+        return configuration;
     }
 }

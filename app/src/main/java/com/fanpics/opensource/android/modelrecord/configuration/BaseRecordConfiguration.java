@@ -11,8 +11,8 @@ import java.util.Date;
 import retrofit.Callback;
 
 public abstract class BaseRecordConfiguration<T> {
-    private AsyncServerCall asyncServerCall;
-    private SynchronousServerCall synchronousServerCall;
+    private AsyncNetworkCall asyncNetworkCall;
+    private SynchronousNetworkCall synchronousNetworkCall;
 
     public static enum Type {REFRESH, CACHE_ONLY, NETWORK_AS_FALLBACK, LOAD;}
 
@@ -38,7 +38,7 @@ public abstract class BaseRecordConfiguration<T> {
         return typeSupportsCacheLoading && hasCache();
     }
 
-    public boolean shouldLoadFromServer() {
+    public boolean shouldLoadFromNetwork() {
         if (type != Type.NETWORK_AS_FALLBACK) {
             return (type == Type.LOAD) || (type == Type.REFRESH);
         } else {
@@ -106,39 +106,39 @@ public abstract class BaseRecordConfiguration<T> {
         runSynchronously = true;
     }
 
-    public void callOnServerAsync(Object key, Callback callback) {
-        if (asyncServerCall == null) {
-            throw new RuntimeException("AsyncServerCall must be set with setAsyncServerCall(call) before performing an async action");
+    public void performAsynchronousNetworkCall(Object key, Callback callback) {
+        if (asyncNetworkCall == null) {
+            throw new RuntimeException("AsyncNetworkCall must be set with setAsynchronousNetworkCall(call) before performing an async action");
         }
 
-        asyncServerCall.call(key, callback);
+        asyncNetworkCall.call(key, callback);
     }
 
-    public Result callOnServerSynchronously(Object key) {
-        if (synchronousServerCall == null) {
-            throw new RuntimeException("SynchronousServerCall must be set with setSynchronousServerCall(call) before performing an async action");
+    public Result performSynchronousNetworkCall(Object key) {
+        if (synchronousNetworkCall == null) {
+            throw new RuntimeException("SynchronousNetworkCall must be set with setSynchronousNetworkCall(call) before performing an async action");
         }
 
-        return synchronousServerCall.call(key);
+        return synchronousNetworkCall.call(key);
     }
 
-    public void setAsyncServerCall(AsyncServerCall asyncServerCall) {
-        this.asyncServerCall = asyncServerCall;
+    public void setAsynchronousNetworkCall(AsyncNetworkCall asyncNetworkCall) {
+        this.asyncNetworkCall = asyncNetworkCall;
     }
 
-    public void setSynchronousServerCall(SynchronousServerCall synchronousServerCall) {
-        this.synchronousServerCall = synchronousServerCall;
+    public void setSynchronousNetworkCall(SynchronousNetworkCall synchronousNetworkCall) {
+        this.synchronousNetworkCall = synchronousNetworkCall;
     }
 
     public abstract void removeCache();
 
     protected abstract boolean hasCache();
 
-    public interface AsyncServerCall {
+    public interface AsyncNetworkCall {
         void call(Object key, Callback callback);
     }
 
-    private interface SynchronousServerCall {
+    public interface SynchronousNetworkCall {
         Result call(Object key);
     }
 }

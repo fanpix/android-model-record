@@ -54,7 +54,7 @@ public abstract class BaseRecordCallback {
             reportHttpFailure(retrofitError);
         }
 
-        getRecordCallbackSettings().callFailureCallback();
+        getRecordConfiguration().callFailureCallback();
         postFailureEvent(retrofitError);
     }
 
@@ -76,7 +76,7 @@ public abstract class BaseRecordCallback {
 
         if (httpReport != null) {
             final String url = error.getUrl();
-            final long startTime = getRecordCallbackSettings().getStartTime();
+            final long startTime = getRecordConfiguration().getStartTime();
             final long currentTime = new Date().getTime();
             httpReport.reportHttpError(url, startTime, currentTime, exception, error);
         }
@@ -86,7 +86,7 @@ public abstract class BaseRecordCallback {
         if (response != null && httpReport != null) {
             final String url = response.getUrl();
             final int status = response.getStatus();
-            final long startTime = getRecordCallbackSettings().getStartTime();
+            final long startTime = getRecordConfiguration().getStartTime();
             final long currentTime = new Date().getTime();
             httpReport.reportHttpSuccess(url, status, startTime, currentTime, response);
         }
@@ -106,7 +106,7 @@ public abstract class BaseRecordCallback {
         return new Runnable() {
             @Override
             public void run() {
-                final FailureEvent event = getRecordCallbackSettings().getFailureEvent();
+                final FailureEvent event = getRecordConfiguration().getFailureEvent();
                 event.setError(retrofitError);
                 bus.post(event);
             }
@@ -114,8 +114,8 @@ public abstract class BaseRecordCallback {
     }
 
     public void disableCaching() {
-        getRecordCallbackSettings().removeCache();
+        getRecordConfiguration().removeCache();
     }
 
-    protected abstract BaseRecordConfiguration getRecordCallbackSettings();
+    protected abstract BaseRecordConfiguration getRecordConfiguration();
 }
