@@ -2,13 +2,13 @@ package com.fanpics.opensource.android.modelrecord;
 
 import android.os.Handler;
 
-import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
+import com.fanpics.opensource.android.modelrecord.configuration.BaseRecordConfiguration;
 import com.fanpics.opensource.android.modelrecord.callback.CreateCallback;
 import com.fanpics.opensource.android.modelrecord.callback.DeleteCallback;
 import com.fanpics.opensource.android.modelrecord.callback.LoadCallback;
 import com.fanpics.opensource.android.modelrecord.callback.LoadListCallback;
-import com.fanpics.opensource.android.modelrecord.settings.MultiRecordSettings;
-import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
+import com.fanpics.opensource.android.modelrecord.configuration.MultiRecordConfiguration;
+import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
 import com.fanpics.opensource.android.modelrecord.callback.UpdateCallback;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.squareup.otto.Bus;
@@ -41,60 +41,60 @@ public class ModelRecord<T> {
     }
 
     public void create(T model){
-        SingleRecordSettings settings = setupCreateSettings(new SingleRecordSettings<T>(), model);
-        final CreateCallback createCallback = CreateCallback.createFromSettings(settings, bus, httpReport);
-        settings.callOnServerAsync(model, createCallback);
+        SingleRecordConfiguration configuration = setupCreateSettings(new SingleRecordConfiguration<T>(), model);
+        final CreateCallback createCallback = CreateCallback.createFromSettings(configuration, bus, httpReport);
+        configuration.callOnServerAsync(model, createCallback);
     }
 
-    protected SingleRecordSettings setupCreateSettings(SingleRecordSettings recordCallbackSettings, T model) {
+    protected SingleRecordConfiguration setupCreateSettings(SingleRecordConfiguration configuration, T model) {
         throw new RuntimeException("SetupCreateSettings() must be implemented before calling create");
     }
 
     public void update(T model){
-        SingleRecordSettings settings = setupUpdateSettings(new SingleRecordSettings<T>(), model);
-        final UpdateCallback updateCallback = UpdateCallback.createFromSettings(settings, bus, httpReport);
-        settings.callOnServerAsync(model, updateCallback);
+        SingleRecordConfiguration configuration = setupUpdateSettings(new SingleRecordConfiguration<T>(), model);
+        final UpdateCallback updateCallback = UpdateCallback.createFromSettings(configuration, bus, httpReport);
+        configuration.callOnServerAsync(model, updateCallback);
     }
 
-    protected SingleRecordSettings setupUpdateSettings(SingleRecordSettings recordCallbackSettings, T model) {
+    protected SingleRecordConfiguration setupUpdateSettings(SingleRecordConfiguration configuration, T model) {
         throw new RuntimeException("setupUpdateSettings() must be implemented before calling update");
     }
 
     public void loadList(Object key) {
-        loadListAsynchronously(key, new MultiRecordSettings<T>(SingleRecordSettings.Type.LOAD));
+        loadListAsynchronously(key, new MultiRecordConfiguration<T>(SingleRecordConfiguration.Type.LOAD));
     }
 
     public void refreshList(Object key) {
-        loadListAsynchronously(key, new MultiRecordSettings<T>(SingleRecordSettings.Type.REFRESH));
+        loadListAsynchronously(key, new MultiRecordConfiguration<T>(SingleRecordConfiguration.Type.REFRESH));
     }
 
     public void getPreLoadedList(Object key) {
-        loadListAsynchronously(key, new MultiRecordSettings<T>(SingleRecordSettings.Type.CACHE_ONLY));
+        loadListAsynchronously(key, new MultiRecordConfiguration<T>(SingleRecordConfiguration.Type.CACHE_ONLY));
     }
 
-    protected void loadListAsynchronously(final Object key, final MultiRecordSettings recommendedSettings){
+    protected void loadListAsynchronously(final Object key, final MultiRecordConfiguration configuration){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                loadList(key, recommendedSettings);
+                loadList(key, configuration);
             }
         }).start();
     }
 
     public List loadListSynchronously(final Object key) {
-        final MultiRecordSettings settings = new MultiRecordSettings<T>(MultiRecordSettings.Type.LOAD);
-        settings.setRunSynchronously();
-        return loadList(key, settings);
+        final MultiRecordConfiguration configuration = new MultiRecordConfiguration<T>(MultiRecordConfiguration.Type.LOAD);
+        configuration.setRunSynchronously();
+        return loadList(key, configuration);
     }
 
     public List refreshListSynchronously(final Object key) {
-        final MultiRecordSettings settings = new MultiRecordSettings<T>(MultiRecordSettings.Type.REFRESH);
-        settings.setRunSynchronously();
-        return loadList(key, settings);
+        final MultiRecordConfiguration configuration = new MultiRecordConfiguration<T>(MultiRecordConfiguration.Type.REFRESH);
+        configuration.setRunSynchronously();
+        return loadList(key, configuration);
     }
 
-    protected List loadList(Object key, MultiRecordSettings recommendedSettings) {
-        MultiRecordSettings settings = setupLoadListSettings(recommendedSettings, key);
+    protected List loadList(Object key, MultiRecordConfiguration configuration) {
+        MultiRecordConfiguration settings = setupLoadListSettings(configuration, key);
         if(settings.shouldLoadFromCache()) {
             final List loadedObject = loadListFromCache(key, settings);
             if (loadedObject != null && settings.shouldRunSynchronously()) {
@@ -109,20 +109,20 @@ public class ModelRecord<T> {
         return null;
     }
 
-    private List loadListFromCache(Object key, MultiRecordSettings settings) {
-        final RecordCache cache = settings.getCache();
+    private List loadListFromCache(Object key, MultiRecordConfiguration configuration) {
+        final RecordCache cache = configuration.getCache();
         final List object = cache.loadList(key);
-        if (!settings.shouldRunSynchronously()) {
-            postLoadedObject(object, settings);
+        if (!configuration.shouldRunSynchronously()) {
+            postLoadedObject(object, configuration);
         }
 
         return object;
     }
 
-    private List loadListOnServer(Object key, MultiRecordSettings settings) {
-        final LoadListCallback loadListCallback = LoadListCallback.createFromSettings(settings, bus, httpReport, handler);
-        if (settings.shouldRunSynchronously()){
-            final Result<List> result = settings.callOnServerSynchronously(key);
+    private List loadListOnServer(Object key, MultiRecordConfiguration configuration) {
+        final LoadListCallback loadListCallback = LoadListCallback.createFromSettings(configuration, bus, httpReport, handler);
+        if (configuration.shouldRunSynchronously()){
+            final Result<List> result = configuration.callOnServerSynchronously(key);
             if(!result.shouldCache()) {
                 loadListCallback.disableCaching();
             }
@@ -130,45 +130,45 @@ public class ModelRecord<T> {
             loadListCallback.synchronousSuccess(result.getModel(), result.getResponse());
             return result.getModel();
         } else {
-            settings.callOnServerAsync(key, loadListCallback);
+            configuration.callOnServerAsync(key, loadListCallback);
             return null;
         }
     }
 
-    protected MultiRecordSettings setupLoadListSettings(MultiRecordSettings recordCallbackSettings, Object key) {
+    protected MultiRecordConfiguration setupLoadListSettings(MultiRecordConfiguration configuration, Object key) {
         throw new RuntimeException("setupLoadListSettings() must be implemented before calling loadList");
     }
 
     public void load(Object key) {
-        loadAsynchronously(key, new SingleRecordSettings<T>(SingleRecordSettings.Type.LOAD));
+        loadAsynchronously(key, new SingleRecordConfiguration<T>(SingleRecordConfiguration.Type.LOAD));
     }
 
     public void refresh(Object key) {
-        loadAsynchronously(key, new SingleRecordSettings<T>(SingleRecordSettings.Type.REFRESH));
+        loadAsynchronously(key, new SingleRecordConfiguration<T>(SingleRecordConfiguration.Type.REFRESH));
     }
 
     public void getPreLoaded(Object key) {
-        loadAsynchronously(key, new SingleRecordSettings<T>(SingleRecordSettings.Type.CACHE_ONLY));
+        loadAsynchronously(key, new SingleRecordConfiguration<T>(SingleRecordConfiguration.Type.CACHE_ONLY));
     }
 
-    protected void loadAsynchronously(final Object key, final SingleRecordSettings recommendedSettings){
+    protected void loadAsynchronously(final Object key, final SingleRecordConfiguration configuration){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                recommendedSettings.setRunAsynchronously();
-                load(key, recommendedSettings);
+                configuration.setRunAsynchronously();
+                load(key, configuration);
             }
         }).start();
     }
 
     public Object loadSynchronously(final Object key) {
-        final SingleRecordSettings settings = new SingleRecordSettings<T>(SingleRecordSettings.Type.LOAD);
-        settings.setRunSynchronously();
-        return load(key, settings);
+        final SingleRecordConfiguration configuration = new SingleRecordConfiguration<T>(SingleRecordConfiguration.Type.LOAD);
+        configuration.setRunSynchronously();
+        return load(key, configuration);
     }
 
-    protected Object load(Object key, SingleRecordSettings recommendedSettings) {
-        SingleRecordSettings settings = setupLoadSettings(recommendedSettings, key);
+    protected Object load(Object key, SingleRecordConfiguration configuration) {
+        SingleRecordConfiguration settings = setupLoadSettings(configuration, key);
 
         if (settings.shouldLoadFromCache()) {
             final Object loadedObject = loadFromCache(key, settings);
@@ -184,20 +184,20 @@ public class ModelRecord<T> {
         return null;
     }
 
-    private Object loadFromCache(Object key, SingleRecordSettings settings) {
-        final RecordCache cache = settings.getCache();
+    private Object loadFromCache(Object key, SingleRecordConfiguration configuration) {
+        final RecordCache cache = configuration.getCache();
         final Object object = cache.load(key);
-        if (!settings.shouldRunSynchronously()) {
-            postLoadedObject(object, settings);
+        if (!configuration.shouldRunSynchronously()) {
+            postLoadedObject(object, configuration);
         }
 
         return object;
     }
 
-    private Object loadOnServer(Object key, SingleRecordSettings settings) {
-        final LoadCallback loadCallback = LoadCallback.createFromSettings(settings, bus, httpReport, key, handler);
-        if (settings.shouldRunSynchronously()){
-            final Result result = settings.callOnServerSynchronously(key);
+    private Object loadOnServer(Object key, SingleRecordConfiguration configuration) {
+        final LoadCallback loadCallback = LoadCallback.createFromSettings(configuration, bus, httpReport, key, handler);
+        if (configuration.shouldRunSynchronously()){
+            final Result result = configuration.callOnServerSynchronously(key);
             if(!result.shouldCache()) {
                 loadCallback.disableCaching();
             }
@@ -205,34 +205,34 @@ public class ModelRecord<T> {
             loadCallback.synchronousSuccess(result.getModel(), result.getResponse());
             return result.getModel();
         } else {
-            settings.callOnServerAsync(key, loadCallback);
+            configuration.callOnServerAsync(key, loadCallback);
             return null;
         }
     }
 
-    private void postLoadedObject(Object object, BaseRecordSettings settings) {
+    private void postLoadedObject(Object object, BaseRecordConfiguration configuration) {
         if (object != null) {
-            final SuccessEvent event = settings.getSuccessEvent();
-            event.setHasFinished(!settings.shouldLoadFromServer());
+            final SuccessEvent event = configuration.getSuccessEvent();
+            event.setHasFinished(!configuration.shouldLoadFromServer());
             event.setResult(object);
             postOnMainThread(event);
-        } else if (!settings.shouldLoadFromServer()) {
-            final Object event = settings.getFailureEvent();
+        } else if (!configuration.shouldLoadFromServer()) {
+            final Object event = configuration.getFailureEvent();
             postOnMainThread(event);
         }
     }
 
-    protected SingleRecordSettings setupLoadSettings(SingleRecordSettings recordCallbackSettings, Object key) {
+    protected SingleRecordConfiguration setupLoadSettings(SingleRecordConfiguration configuration, Object key) {
         throw new RuntimeException("setupLoadSettings() must be implemented before calling load");
     }
 
     public void delete(T model){
-        SingleRecordSettings settings = setupDeleteSettings(new SingleRecordSettings(), model);
-        final DeleteCallback deleteCallback = DeleteCallback.createFromSettings(settings, bus, httpReport, model);
-        settings.callOnServerAsync(model, deleteCallback);
+        SingleRecordConfiguration configuration = setupDeleteSettings(new SingleRecordConfiguration(), model);
+        final DeleteCallback deleteCallback = DeleteCallback.createFromSettings(configuration, bus, httpReport, model);
+        configuration.callOnServerAsync(model, deleteCallback);
     }
 
-    protected SingleRecordSettings setupDeleteSettings(SingleRecordSettings recordCallbackSettings, T model) {
+    protected SingleRecordConfiguration setupDeleteSettings(SingleRecordConfiguration configuration, T model) {
         throw new RuntimeException("setupDeleteSettings() must be implemented before calling delete");
     }
 }

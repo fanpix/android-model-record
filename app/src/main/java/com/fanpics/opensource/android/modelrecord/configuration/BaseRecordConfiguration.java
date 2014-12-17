@@ -1,4 +1,4 @@
-package com.fanpics.opensource.android.modelrecord.settings;
+package com.fanpics.opensource.android.modelrecord.configuration;
 
 import com.fanpics.opensource.android.modelrecord.Result;
 import com.fanpics.opensource.android.modelrecord.callback.FailureCallback;
@@ -10,7 +10,7 @@ import java.util.Date;
 
 import retrofit.Callback;
 
-public abstract class BaseRecordSettings<T> {
+public abstract class BaseRecordConfiguration<T> {
     private AsyncServerCall asyncServerCall;
     private SynchronousServerCall synchronousServerCall;
 
@@ -26,9 +26,9 @@ public abstract class BaseRecordSettings<T> {
     private final Date createdTime = new Date();
 
     private Type type;
-    public BaseRecordSettings() {
+    public BaseRecordConfiguration() {
     }
-    public BaseRecordSettings(Type type) {
+    public BaseRecordConfiguration(Type type) {
         this.type = type;
     }
 

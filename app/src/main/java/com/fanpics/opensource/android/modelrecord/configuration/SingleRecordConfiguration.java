@@ -1,14 +1,14 @@
-package com.fanpics.opensource.android.modelrecord.settings;
+package com.fanpics.opensource.android.modelrecord.configuration;
 
 import com.fanpics.opensource.android.modelrecord.RecordCache;
 
-public class SingleRecordSettings<T> extends BaseRecordSettings<T> {
+public class SingleRecordConfiguration<T> extends BaseRecordConfiguration<T> {
     private RecordCache<T> cache;
 
-    public SingleRecordSettings() {
+    public SingleRecordConfiguration() {
     }
 
-    public SingleRecordSettings(Type type) {
+    public SingleRecordConfiguration(Type type) {
         super(type);
     }
 

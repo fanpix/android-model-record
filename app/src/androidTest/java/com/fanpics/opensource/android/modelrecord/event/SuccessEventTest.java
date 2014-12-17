@@ -1,14 +1,7 @@
 package com.fanpics.opensource.android.modelrecord.event;
 
-import com.fanpics.opensource.android.modelrecord.RecordCache;
-import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import java.util.Objects;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

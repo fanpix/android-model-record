@@ -3,7 +3,7 @@ package com.fanpics.opensource.android.modelrecord.callback;
 import com.fanpics.opensource.android.modelrecord.RecordCache;
 import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
-import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
+import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
 import com.squareup.otto.Bus;
 
 import org.junit.Before;
@@ -26,7 +26,7 @@ public class RecordCallbackTest {
     @Before
     public void createRecordCallback() {
         recordCallback = mock(RecordCallback.class);
-        recordCallback.settings = mock(SingleRecordSettings.class);
+        recordCallback.settings = mock(SingleRecordConfiguration.class);
         recordCallback.bus = mock(Bus.class);
         cache = mock(RecordCache.class);
         when(recordCallback.getRecordCallbackSettings()).thenCallRealMethod();

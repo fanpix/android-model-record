@@ -1,17 +1,17 @@
-package com.fanpics.opensource.android.modelrecord.settings;
+package com.fanpics.opensource.android.modelrecord.configuration;
 
 import com.fanpics.opensource.android.modelrecord.RecordCache;
 
 import java.util.List;
 
-public class MultiRecordSettings<T> extends BaseRecordSettings<List<T>> {
+public class MultiRecordConfiguration<T> extends BaseRecordConfiguration<List<T>> {
 
     private RecordCache<T> cache;
 
-    public MultiRecordSettings() {
+    public MultiRecordConfiguration() {
     }
 
-    public MultiRecordSettings(Type type) {
+    public MultiRecordConfiguration(Type type) {
         super(type);
     }
 

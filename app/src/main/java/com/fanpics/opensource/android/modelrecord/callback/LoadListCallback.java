@@ -5,8 +5,8 @@ import android.os.Handler;
 import com.fanpics.opensource.android.modelrecord.HttpReport;
 import com.fanpics.opensource.android.modelrecord.RecordCache;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
-import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
-import com.fanpics.opensource.android.modelrecord.settings.MultiRecordSettings;
+import com.fanpics.opensource.android.modelrecord.configuration.BaseRecordConfiguration;
+import com.fanpics.opensource.android.modelrecord.configuration.MultiRecordConfiguration;
 import com.squareup.otto.Bus;
 
 import java.util.List;
@@ -17,20 +17,20 @@ import retrofit.client.Response;
 
 public class LoadListCallback<T> extends BaseRecordCallback implements Callback<List<T>> {
 
-    protected MultiRecordSettings<T> settings;
+    protected MultiRecordConfiguration<T> settings;
     protected Object key;
 
-    protected LoadListCallback(MultiRecordSettings<T> settings, Bus bus, HttpReport httpReport){
+    protected LoadListCallback(MultiRecordConfiguration<T> settings, Bus bus, HttpReport httpReport){
         super(bus, httpReport);
         this.settings = settings;
     }
 
-    protected LoadListCallback(MultiRecordSettings settings, Bus bus, HttpReport httpReport, Handler handler) {
+    protected LoadListCallback(MultiRecordConfiguration settings, Bus bus, HttpReport httpReport, Handler handler) {
         super(bus, httpReport, handler);
         this.settings = settings;
     }
 
-    public static LoadListCallback createFromSettings(MultiRecordSettings settings, Bus bus, HttpReport httpReport, Handler handler) {
+    public static LoadListCallback createFromSettings(MultiRecordConfiguration settings, Bus bus, HttpReport httpReport, Handler handler) {
         return new LoadListCallback(settings, bus, httpReport, handler);
     }
 
@@ -79,7 +79,7 @@ public class LoadListCallback<T> extends BaseRecordCallback implements Callback<
     }
 
     @Override
-    protected BaseRecordSettings getRecordCallbackSettings() {
+    protected BaseRecordConfiguration getRecordCallbackSettings() {
         return settings;
     }
 }

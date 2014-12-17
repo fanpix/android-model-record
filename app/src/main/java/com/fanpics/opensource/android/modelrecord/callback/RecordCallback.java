@@ -5,8 +5,8 @@ import android.os.Handler;
 import com.fanpics.opensource.android.modelrecord.HttpReport;
 import com.fanpics.opensource.android.modelrecord.RecordCache;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
-import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
-import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
+import com.fanpics.opensource.android.modelrecord.configuration.BaseRecordConfiguration;
+import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
 import com.squareup.otto.Bus;
 
 import retrofit.Callback;
@@ -15,15 +15,15 @@ import retrofit.client.Response;
 
 public class RecordCallback<T> extends BaseRecordCallback implements Callback<T> {
 
-    protected SingleRecordSettings<T> settings;
+    protected SingleRecordConfiguration<T> settings;
     protected Object key;
 
-    protected RecordCallback(SingleRecordSettings<T> settings, Bus bus, HttpReport httpReport){
+    protected RecordCallback(SingleRecordConfiguration<T> settings, Bus bus, HttpReport httpReport){
         super(bus, httpReport);
         this.settings = settings;
     }
 
-    public RecordCallback(SingleRecordSettings<T> settings, Bus bus, HttpReport httpReport, Handler handler) {
+    public RecordCallback(SingleRecordConfiguration<T> settings, Bus bus, HttpReport httpReport, Handler handler) {
         super(bus, httpReport, handler);
         this.settings = settings;
     }
@@ -81,7 +81,7 @@ public class RecordCallback<T> extends BaseRecordCallback implements Callback<T>
     }
 
     @Override
-    protected BaseRecordSettings getRecordCallbackSettings() {
+    protected BaseRecordConfiguration getRecordCallbackSettings() {
         return settings;
     }
 }

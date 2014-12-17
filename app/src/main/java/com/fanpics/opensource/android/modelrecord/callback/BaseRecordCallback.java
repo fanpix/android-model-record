@@ -5,7 +5,7 @@ import android.os.Handler;
 import com.fanpics.opensource.android.modelrecord.HttpReport;
 import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
-import com.fanpics.opensource.android.modelrecord.settings.BaseRecordSettings;
+import com.fanpics.opensource.android.modelrecord.configuration.BaseRecordConfiguration;
 import com.squareup.otto.Bus;
 
 import java.util.Date;
@@ -117,5 +117,5 @@ public abstract class BaseRecordCallback {
         getRecordCallbackSettings().removeCache();
     }
 
-    protected abstract BaseRecordSettings getRecordCallbackSettings();
+    protected abstract BaseRecordConfiguration getRecordCallbackSettings();
 }

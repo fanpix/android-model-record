@@ -3,7 +3,7 @@ package com.fanpics.opensource.android.modelrecord.callback;
 import com.fanpics.opensource.android.modelrecord.RecordCache;
 import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
-import com.fanpics.opensource.android.modelrecord.settings.SingleRecordSettings;
+import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
 import com.squareup.otto.Bus;
 
 import org.junit.Before;
@@ -17,12 +17,12 @@ import static org.mockito.Mockito.when;
 public class DeleteCallbackTest {
 
     private RecordCache cache;
-    private SingleRecordSettings settings;
+    private SingleRecordConfiguration settings;
     private Bus bus;
 
     @Before
     public void createRecordCallback() {
-        settings = mock(SingleRecordSettings.class);
+        settings = mock(SingleRecordConfiguration.class);
         bus = mock(Bus.class);
         cache = mock(RecordCache.class);
     }
