@@ -32,6 +32,10 @@ public class RecordCallback<T> extends BaseRecordCallback implements Callback<T>
         this.key = key;
     }
 
+    public Object getKey() {
+        return key;
+    }
+
     @Override
     public void success(T model, Response response) {
         success(model, response, true);
@@ -46,7 +50,7 @@ public class RecordCallback<T> extends BaseRecordCallback implements Callback<T>
 
         event.setResult(model);
         event.setHasFinished(true);
-        cacheIfExists(model);
+        runCacheThread(model);
         sendHttpReport(response);
         settings.callSuccessCallback(model);
 
@@ -55,16 +59,20 @@ public class RecordCallback<T> extends BaseRecordCallback implements Callback<T>
         }
     }
 
-    protected void cacheIfExists(final T model) {
+    protected void runCacheThread(final T model) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final RecordCache<T> cache = settings.getCache();
-                if (cache != null) {
-                    cache.store(key, model);
-                }
+                manageCacheIfExists(model);
             }
         }).start();
+    }
+
+    protected void manageCacheIfExists(T model) {
+        final RecordCache<T> cache = settings.getCache();
+        if (cache != null) {
+            cache.store(key, model);
+        }
     }
 
     @Override

@@ -228,7 +228,7 @@ public class ModelRecord<T> {
 
     public void delete(T model){
         SingleRecordSettings settings = setupDeleteSettings(new SingleRecordSettings(), model);
-        final DeleteCallback deleteCallback = DeleteCallback.createFromSettings(settings, bus, httpReport);
+        final DeleteCallback deleteCallback = DeleteCallback.createFromSettings(settings, bus, httpReport, model);
         settings.callOnServerAsync(model, deleteCallback);
     }
 

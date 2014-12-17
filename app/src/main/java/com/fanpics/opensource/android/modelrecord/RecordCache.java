@@ -12,4 +12,6 @@ public interface RecordCache<T> {
     public List<T> loadList(Object object);
 
     public void clear();
+
+    public void delete(T object);
 }

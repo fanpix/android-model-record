@@ -62,7 +62,7 @@ public class RecordCallbackTest {
         recordCallback.success(object, null);
         verify(recordCallback.settings).callSuccessCallback(object);
         verify(recordCallback.bus).post(event);
-        verify(recordCallback).cacheIfExists(object);
+        verify(recordCallback).runCacheThread(object);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class RecordCallbackTest {
 
         recordCallback.synchronousSuccess(object, null);
         verify(recordCallback.settings).callSuccessCallback(object);
-        verify(recordCallback).cacheIfExists(object);
+        verify(recordCallback).runCacheThread(object);
         verify(recordCallback, never()).postSuccessEvent(event);
     }
 
