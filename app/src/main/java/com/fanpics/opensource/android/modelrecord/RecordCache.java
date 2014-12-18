@@ -3,6 +3,7 @@ package com.fanpics.opensource.android.modelrecord;
 import java.util.List;
 
 public interface RecordCache<T> {
+
     public T load(Object key);
 
     public void store(Object key, T model);

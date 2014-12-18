@@ -14,20 +14,20 @@ public abstract class BaseRecordConfiguration<T> {
     private AsyncNetworkCall asyncNetworkCall;
     private SynchronousNetworkCall synchronousNetworkCall;
 
-    public static enum Type {REFRESH, CACHE_ONLY, NETWORK_AS_FALLBACK, LOAD;}
+    public static enum Type {REFRESH, CACHE_ONLY, NETWORK_AS_FALLBACK, LOAD}
 
     private SuccessEvent<T> successEvent;
-    private boolean runSynchronously;
-
     private SuccessCallback<T> successCallback;
-
     private FailureEvent failureEvent;
     private FailureCallback failureCallback;
     private final Date createdTime = new Date();
 
+    private boolean runSynchronously;
     private Type type;
+
     public BaseRecordConfiguration() {
     }
+
     public BaseRecordConfiguration(Type type) {
         this.type = type;
     }
@@ -96,6 +96,10 @@ public abstract class BaseRecordConfiguration<T> {
 
     public boolean shouldRunSynchronously() {
         return runSynchronously;
+    }
+
+    public boolean shouldRunAsynchronously() {
+        return !runSynchronously;
     }
 
     public void setRunAsynchronously() {

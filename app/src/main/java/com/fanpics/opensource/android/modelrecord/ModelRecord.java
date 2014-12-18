@@ -242,7 +242,7 @@ public class ModelRecord<T> {
     private Object loadFromCache(Object key, SingleRecordConfiguration configuration) {
         final RecordCache cache = configuration.getCache();
         final Object object = cache.load(key);
-        if (!configuration.shouldRunSynchronously()) {
+        if (configuration.shouldRunAsynchronously()) {
             postLoadedObject(object, configuration);
         }
 
@@ -396,7 +396,7 @@ public class ModelRecord<T> {
     private List loadListFromCache(Object key, MultiRecordConfiguration configuration) {
         final RecordCache cache = configuration.getCache();
         final List object = cache.loadList(key);
-        if (!configuration.shouldRunSynchronously()) {
+        if (configuration.shouldRunAsynchronously()) {
             postLoadedObject(object, configuration);
         }
 
