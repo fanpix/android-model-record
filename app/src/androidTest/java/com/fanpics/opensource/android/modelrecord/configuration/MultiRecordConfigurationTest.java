@@ -13,6 +13,7 @@ public class MultiRecordConfigurationTest {
     private MultiRecordConfiguration multiRecordConfiguration;
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLoadTypeWithoutCache() {
         multiRecordConfiguration = new MultiRecordConfiguration(MultiRecordConfiguration.Type.LOAD);
 
@@ -21,6 +22,7 @@ public class MultiRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLoadTypeWithCache() {
         multiRecordConfiguration = new MultiRecordConfiguration(MultiRecordConfiguration.Type.LOAD);
 
@@ -30,6 +32,7 @@ public class MultiRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testRefreshTypeWithoutCache() {
         multiRecordConfiguration = new MultiRecordConfiguration(MultiRecordConfiguration.Type.REFRESH);
 
@@ -38,6 +41,7 @@ public class MultiRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testRefreshTypeWithCache() {
         multiRecordConfiguration = new MultiRecordConfiguration(MultiRecordConfiguration.Type.REFRESH);
 
@@ -47,6 +51,7 @@ public class MultiRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testCacheOnlyTypeWithoutCache() {
         multiRecordConfiguration = new MultiRecordConfiguration(MultiRecordConfiguration.Type.CACHE_ONLY);
 
@@ -55,6 +60,7 @@ public class MultiRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testCacheOnlyTypeWithCache() {
         multiRecordConfiguration = new MultiRecordConfiguration(MultiRecordConfiguration.Type.CACHE_ONLY);
 
@@ -63,6 +69,7 @@ public class MultiRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testNetworkAsFallbackTypeWithoutCache() {
         multiRecordConfiguration = new MultiRecordConfiguration(MultiRecordConfiguration.Type.NETWORK_AS_FALLBACK);
         SuccessEvent event = new SuccessEvent();
@@ -73,6 +80,7 @@ public class MultiRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testNetworkAsFallbackTypeWithCacheButNoResult() {
         multiRecordConfiguration = new MultiRecordConfiguration(MultiRecordConfiguration.Type.NETWORK_AS_FALLBACK);
         SuccessEvent event = new SuccessEvent();
@@ -84,6 +92,7 @@ public class MultiRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testNetworkAsFallbackTypeWithCacheAndResult() {
         multiRecordConfiguration = new MultiRecordConfiguration(MultiRecordConfiguration.Type.NETWORK_AS_FALLBACK);
         SuccessEvent event = new SuccessEvent();

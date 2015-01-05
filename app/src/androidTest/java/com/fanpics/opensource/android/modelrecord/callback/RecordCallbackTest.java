@@ -21,31 +21,31 @@ import static org.mockito.Mockito.when;
 public class RecordCallbackTest {
 
     private RecordCallback<Object> recordCallback;
-    private RecordCache cache;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void createRecordCallback() {
         recordCallback = mock(RecordCallback.class);
-        recordCallback.settings = mock(SingleRecordConfiguration.class);
+        recordCallback.configuration = mock(SingleRecordConfiguration.class);
         recordCallback.bus = mock(Bus.class);
-        cache = mock(RecordCache.class);
+        RecordCache cache = mock(RecordCache.class);
         when(recordCallback.getRecordConfiguration()).thenCallRealMethod();
-        when(recordCallback.settings.getCache()).thenReturn(cache);
+        when(recordCallback.configuration.getCache()).thenReturn(cache);
     }
 
     @Test
     public void testSuccessWithoutCache() {
         Object object = new Object();
-        when(recordCallback.settings.getCache()).thenReturn(null);
+        when(recordCallback.configuration.getCache()).thenReturn(null);
         SuccessEvent event = mock(SuccessEvent.class);
 
-        when(recordCallback.settings.getSuccessEvent()).thenReturn(event);
+        when(recordCallback.configuration.getSuccessEvent()).thenReturn(event);
 
         doCallRealMethod().when(recordCallback).postSuccessEvent(any(SuccessEvent.class));
         doCallRealMethod().when(recordCallback).success(object, null);
 
         recordCallback.success(object, null);
-        verify(recordCallback.settings).callSuccessCallback(object);
+        verify(recordCallback.configuration).callSuccessCallback(object);
         verify(recordCallback.bus).post(event);
     }
 
@@ -54,13 +54,13 @@ public class RecordCallbackTest {
         Object object = new Object();
         SuccessEvent event = mock(SuccessEvent.class);
 
-        when(recordCallback.settings.getSuccessEvent()).thenReturn(event);
+        when(recordCallback.configuration.getSuccessEvent()).thenReturn(event);
 
         doCallRealMethod().when(recordCallback).postSuccessEvent(any(SuccessEvent.class));
         doCallRealMethod().when(recordCallback).success(object, null);
 
         recordCallback.success(object, null);
-        verify(recordCallback.settings).callSuccessCallback(object);
+        verify(recordCallback.configuration).callSuccessCallback(object);
         verify(recordCallback.bus).post(event);
         verify(recordCallback).runCacheThread(object);
     }
@@ -68,15 +68,15 @@ public class RecordCallbackTest {
     @Test
     public void testSynchronousSuccessWithoutCache() {
         Object object = new Object();
-        when(recordCallback.settings.getCache()).thenReturn(null);
+        when(recordCallback.configuration.getCache()).thenReturn(null);
         SuccessEvent event = mock(SuccessEvent.class);
 
-        when(recordCallback.settings.getSuccessEvent()).thenReturn(event);
+        when(recordCallback.configuration.getSuccessEvent()).thenReturn(event);
 
         doCallRealMethod().when(recordCallback).synchronousSuccess(object, null);
 
         recordCallback.synchronousSuccess(object, null);
-        verify(recordCallback.settings).callSuccessCallback(object);
+        verify(recordCallback.configuration).callSuccessCallback(object);
         verify(recordCallback, never()).postSuccessEvent(event);
     }
 
@@ -85,12 +85,12 @@ public class RecordCallbackTest {
         Object object = new Object();
         SuccessEvent event = mock(SuccessEvent.class);
 
-        when(recordCallback.settings.getSuccessEvent()).thenReturn(event);
+        when(recordCallback.configuration.getSuccessEvent()).thenReturn(event);
 
         doCallRealMethod().when(recordCallback).synchronousSuccess(object, null);
 
         recordCallback.synchronousSuccess(object, null);
-        verify(recordCallback.settings).callSuccessCallback(object);
+        verify(recordCallback.configuration).callSuccessCallback(object);
         verify(recordCallback).runCacheThread(object);
         verify(recordCallback, never()).postSuccessEvent(event);
     }
@@ -99,12 +99,12 @@ public class RecordCallbackTest {
     public void testFailure() {
         final FailureEvent event = mock(FailureEvent.class);
 
-        when(recordCallback.settings.getFailureEvent()).thenReturn(event);
+        when(recordCallback.configuration.getFailureEvent()).thenReturn(event);
         doCallRealMethod().when(recordCallback).postFailure(any(RetrofitError.class));
         doCallRealMethod().when(recordCallback).failure(any(RetrofitError.class));
 
         recordCallback.failure(mock(RetrofitError.class));
-        verify(recordCallback.settings).callFailureCallback();
+        verify(recordCallback.configuration).callFailureCallback();
         verify(recordCallback.bus).post(event);
     }
 

@@ -36,7 +36,7 @@ uploadArchives {
             repository(url: "file:////Users/gabriel/.m2/repository")
             pom.groupId = 'com.fanpics.opensource'
             pom.artifactId = 'model-record'
-            pom.version = '0.0.1'
+            pom.version = '1.0.0'
         }
     }
 }

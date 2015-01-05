@@ -195,7 +195,7 @@ public class ModelRecord<T> {
      * @param key Key to be sent in load call
      * @return Loaded object
      */
-    public Object loadSynchronously(final Object key) {
+    public Object loadSynchronously(Object key) {
         final SingleRecordConfiguration baseConfiguration = new SingleRecordConfiguration<T>(SingleRecordConfiguration.Type.LOAD);
         baseConfiguration.setRunSynchronously();
         return load(key, baseConfiguration);
@@ -216,7 +216,7 @@ public class ModelRecord<T> {
      * @param key Key to be sent in load call
      * @return Loaded object
      */
-    public Object refreshSynchronously(final Object key) {
+    public Object refreshSynchronously(Object key) {
         final SingleRecordConfiguration configuration = new SingleRecordConfiguration(SingleRecordConfiguration.Type.REFRESH);
         configuration.setRunSynchronously();
         return load(key, configuration);
@@ -249,6 +249,7 @@ public class ModelRecord<T> {
         return object;
     }
 
+    @SuppressWarnings("unchecked")
     private Object loadOnNetwork(Object key, SingleRecordConfiguration configuration) {
         final LoadCallback loadCallback = LoadCallback.createFromConfiguration(configuration, bus, httpReport, key, handler);
         if (configuration.shouldRunSynchronously()){
@@ -350,7 +351,7 @@ public class ModelRecord<T> {
      * @param key Key to be sent in load call
      * @return Loaded object
      */
-    public List loadListSynchronously(final Object key) {
+    public List loadListSynchronously(Object key) {
         final MultiRecordConfiguration configuration = new MultiRecordConfiguration<T>(MultiRecordConfiguration.Type.LOAD);
         configuration.setRunSynchronously();
         return loadList(key, configuration);
@@ -371,7 +372,7 @@ public class ModelRecord<T> {
      * @param key Key to be sent in load call
      * @return Loaded object
      */
-    public List refreshListSynchronously(final Object key) {
+    public List refreshListSynchronously(Object key) {
         final MultiRecordConfiguration configuration = new MultiRecordConfiguration<T>(MultiRecordConfiguration.Type.REFRESH);
         configuration.setRunSynchronously();
         return loadList(key, configuration);
@@ -403,6 +404,7 @@ public class ModelRecord<T> {
         return object;
     }
 
+    @SuppressWarnings("unchecked")
     private List loadListOnNetwork(Object key, MultiRecordConfiguration configuration) {
         final LoadListCallback loadListCallback = LoadListCallback.createFromConfiguration(configuration, bus, httpReport, handler);
         if (configuration.shouldRunSynchronously()){
@@ -419,6 +421,7 @@ public class ModelRecord<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void postLoadedObject(Object object, BaseRecordConfiguration configuration) {
         if (object != null) {
             final SuccessEvent event = configuration.getSuccessEvent();

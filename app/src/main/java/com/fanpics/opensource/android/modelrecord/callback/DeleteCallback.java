@@ -7,16 +7,17 @@ import com.squareup.otto.Bus;
 
 public class DeleteCallback<T> extends RecordCallback<T> {
 
-    protected DeleteCallback(SingleRecordConfiguration configuration, Bus bus, HttpReport httpReport, T model) {
+    protected DeleteCallback(SingleRecordConfiguration<T> configuration, Bus bus, HttpReport httpReport, T model) {
         super(configuration, bus, httpReport);
         setKey(model);
     }
 
-    public static <T> DeleteCallback<T> createFromConfiguration(SingleRecordConfiguration configuration, Bus bus, HttpReport httpReport,
+    public static <T> DeleteCallback<T> createFromConfiguration(SingleRecordConfiguration<T> configuration, Bus bus, HttpReport httpReport,
                                                                 T model){
-        return new DeleteCallback<T>(configuration, bus, httpReport, model);
+        return new DeleteCallback<>(configuration, bus, httpReport, model);
     }
 
+    @SuppressWarnings("unchecked")
     protected void manageCacheIfExists(T model) {
         final RecordCache<T> cache = configuration.getCache();
         if (cache != null) {

@@ -61,7 +61,8 @@ public abstract class BaseRecordCallback {
     private void reportHttpFailure(RetrofitError retrofitError) {
         final Throwable cause = retrofitError.getCause();
         final Response response = retrofitError.getResponse();
-        if (retrofitError.isNetworkError()) {
+        final boolean isNetworkError = retrofitError.getKind() == RetrofitError.Kind.NETWORK;
+        if (isNetworkError) {
             reportNetworkError(cause, retrofitError);
         } else if (response != null) {
             sendHttpReport(response);

@@ -8,14 +8,14 @@ import com.squareup.otto.Bus;
 
 public class LoadCallback<T> extends RecordCallback<T> {
 
-    protected LoadCallback(SingleRecordConfiguration configuration, Bus bus, HttpReport httpReport, Object key, Handler handler) {
+    protected LoadCallback(SingleRecordConfiguration<T> configuration, Bus bus, HttpReport httpReport, Object key, Handler handler) {
         super(configuration, bus, httpReport, handler);
         setKey(key);
     }
 
-    public static <T> LoadCallback<T> createFromConfiguration(SingleRecordConfiguration configuration, Bus bus, HttpReport httpReport,
+    public static <T> LoadCallback<T> createFromConfiguration(SingleRecordConfiguration<T> configuration, Bus bus, HttpReport httpReport,
                                                               Object key, Handler handler){
-        return new LoadCallback<T>(configuration, bus, httpReport, key, handler);
+        return new LoadCallback<>(configuration, bus, httpReport, key, handler);
     }
 
 }

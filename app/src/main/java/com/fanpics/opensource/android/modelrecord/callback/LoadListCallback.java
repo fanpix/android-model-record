@@ -25,13 +25,13 @@ public class LoadListCallback<T> extends BaseRecordCallback implements Callback<
         this.configuration = configuration;
     }
 
-    protected LoadListCallback(MultiRecordConfiguration configuration, Bus bus, HttpReport httpReport, Handler handler) {
+    protected LoadListCallback(MultiRecordConfiguration<T> configuration, Bus bus, HttpReport httpReport, Handler handler) {
         super(bus, httpReport, handler);
         this.configuration = configuration;
     }
 
-    public static LoadListCallback createFromConfiguration(MultiRecordConfiguration settings, Bus bus, HttpReport httpReport, Handler handler) {
-        return new LoadListCallback(settings, bus, httpReport, handler);
+    public static <T> LoadListCallback createFromConfiguration(MultiRecordConfiguration<T> settings, Bus bus, HttpReport httpReport, Handler handler) {
+        return new LoadListCallback<>(settings, bus, httpReport, handler);
     }
 
     public void setKey(Object key) {

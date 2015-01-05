@@ -1,4 +1,3 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.fanpics.opensource.android.modelrecord">
+<manifest package="com.fanpics.opensource.android.modelrecord">
 
 </manifest>

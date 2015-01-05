@@ -29,6 +29,7 @@ public class BaseRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testCallSuccessCallbackDoesNOTCrashWhenEmpty() {
         configuration.setSuccessCallback(null);
         configuration.callSuccessCallback(null);
@@ -41,6 +42,7 @@ public class BaseRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testCallSuccessCallback() {
         BaseRecordConfiguration settings = mock(BaseRecordConfiguration.class);
         configuration.setSuccessCallback(new SuccessCallback<BaseRecordConfiguration>() {

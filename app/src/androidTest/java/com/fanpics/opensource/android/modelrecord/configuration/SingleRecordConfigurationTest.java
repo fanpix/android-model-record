@@ -13,6 +13,7 @@ public class SingleRecordConfigurationTest {
     private SingleRecordConfiguration singleRecordConfiguration;
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLoadTypeWithoutCache() {
         singleRecordConfiguration = new SingleRecordConfiguration(SingleRecordConfiguration.Type.LOAD);
 
@@ -21,6 +22,7 @@ public class SingleRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLoadTypeWithCache() {
         singleRecordConfiguration = new SingleRecordConfiguration(SingleRecordConfiguration.Type.LOAD);
 
@@ -30,6 +32,7 @@ public class SingleRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testRefreshTypeWithoutCache() {
         singleRecordConfiguration = new SingleRecordConfiguration(SingleRecordConfiguration.Type.REFRESH);
 
@@ -38,6 +41,7 @@ public class SingleRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testRefreshTypeWithCache() {
         singleRecordConfiguration = new SingleRecordConfiguration(SingleRecordConfiguration.Type.REFRESH);
 
@@ -47,6 +51,7 @@ public class SingleRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testCacheOnlyTypeWithoutCache() {
         singleRecordConfiguration = new SingleRecordConfiguration(SingleRecordConfiguration.Type.CACHE_ONLY);
 
@@ -55,6 +60,7 @@ public class SingleRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testCacheOnlyTypeWithCache() {
         singleRecordConfiguration = new SingleRecordConfiguration(SingleRecordConfiguration.Type.CACHE_ONLY);
 
@@ -63,6 +69,7 @@ public class SingleRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testNetworkAsFallbackTypeWithoutCache() {
         singleRecordConfiguration = new SingleRecordConfiguration(SingleRecordConfiguration.Type.NETWORK_AS_FALLBACK);
         SuccessEvent event = new SuccessEvent();
@@ -73,6 +80,7 @@ public class SingleRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testNetworkAsFallbackTypeWithCacheButNoResult() {
         singleRecordConfiguration = new SingleRecordConfiguration(SingleRecordConfiguration.Type.NETWORK_AS_FALLBACK);
         SuccessEvent event = new SuccessEvent();
@@ -84,6 +92,7 @@ public class SingleRecordConfigurationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testNetworkAsFallbackTypeWithCacheAndResult() {
         singleRecordConfiguration = new SingleRecordConfiguration(SingleRecordConfiguration.Type.NETWORK_AS_FALLBACK);
         SuccessEvent event = new SuccessEvent();

@@ -59,15 +59,20 @@ public class ModelRecordTest {
         when(configuration.getCache()).thenReturn(cache);
         when(configuration.getSuccessEvent()).thenReturn(mock(SuccessEvent.class));
         when(configuration.getFailureEvent()).thenReturn(mock(FailureEvent.class));
+        when(configuration.shouldRunSynchronously()).thenReturn(false);
+        when(configuration.shouldRunAsynchronously()).thenReturn(true);
     }
 
     private void setupConfiguration(MultiRecordConfiguration configuration) {
         when(configuration.getCache()).thenReturn(cache);
         when(configuration.getSuccessEvent()).thenReturn(mock(SuccessEvent.class));
         when(configuration.getFailureEvent()).thenReturn(mock(FailureEvent.class));
+        when(configuration.shouldRunSynchronously()).thenReturn(false);
+        when(configuration.shouldRunAsynchronously()).thenReturn(true);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testCreate() {
         final Object object = new Object();
         doCallRealMethod().when(modelRecord).create(object);
@@ -79,6 +84,7 @@ public class ModelRecordTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testUpdate() {
         final Object object = new Object();
         when(modelRecord.setupUpdateConfiguration(any(SingleRecordConfiguration.class), eq(object))).thenReturn(singleRecordConfiguration);
@@ -90,6 +96,7 @@ public class ModelRecordTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testDelete() {
         final Object object = new Object();
         when(modelRecord.setupDeleteConfiguration(any(SingleRecordConfiguration.class), eq(object))).thenReturn(singleRecordConfiguration);
@@ -203,7 +210,7 @@ public class ModelRecordTest {
     @Test
     public void testLoadingListWithCacheAndNetwork() {
         final Object object = new Object();
-        final List<Object> result = new ArrayList<Object>();
+        final List<Object> result = new ArrayList<>();
 
         when(modelRecord.setupLoadListConfiguration(any(MultiRecordConfiguration.class), any(Object.class))).thenReturn(multiRecordConfiguration);
         when(cache.loadList(object)).thenReturn(result);

@@ -17,22 +17,23 @@ import static org.mockito.Mockito.when;
 public class DeleteCallbackTest {
 
     private RecordCache cache;
-    private SingleRecordConfiguration settings;
+    private SingleRecordConfiguration configuration;
     private Bus bus;
 
     @Before
     public void createRecordCallback() {
-        settings = mock(SingleRecordConfiguration.class);
+        configuration = mock(SingleRecordConfiguration.class);
         bus = mock(Bus.class);
         cache = mock(RecordCache.class);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testFailureWithoutCache() {
         final Object model = new Object();
-        DeleteCallback<Object> deleteCallback = DeleteCallback.createFromConfiguration(settings, bus, null, model);
-        when(settings.getFailureEvent()).thenReturn(new FailureEvent());
-        when(deleteCallback.settings.getCache()).thenReturn(null);
+        DeleteCallback<Object> deleteCallback = DeleteCallback.createFromConfiguration(configuration, bus, null, model);
+        when(configuration.getFailureEvent()).thenReturn(new FailureEvent());
+        when(deleteCallback.configuration.getCache()).thenReturn(null);
 
         deleteCallback.failure(null);
 
@@ -40,11 +41,12 @@ public class DeleteCallbackTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSuccessWithCache() {
         final Object model = new Object();
-        DeleteCallback<Object> deleteCallback = DeleteCallback.createFromConfiguration(settings, bus, null, model);
-        when(settings.getSuccessEvent()).thenReturn(new SuccessEvent());
-        when(deleteCallback.settings.getCache()).thenReturn(cache);
+        DeleteCallback<Object> deleteCallback = DeleteCallback.createFromConfiguration(configuration, bus, null, model);
+        when(configuration.getSuccessEvent()).thenReturn(new SuccessEvent());
+        when(deleteCallback.configuration.getCache()).thenReturn(cache);
 
         deleteCallback.success(new Object(), null);
 

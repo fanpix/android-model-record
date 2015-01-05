@@ -26,12 +26,13 @@ public class ResponseParser<T> {
     public Result<T> parse() {
         try {
             final T object = parseFromResponse();
-            return new Result<T>(response, object);
+            return new Result<>(response, object);
         } catch (ConversionException e) {
             throw new RuntimeException("Response body must match type passed in at constructor", e);
         }
     }
 
+    @SuppressWarnings("unchecked")
     private T parseFromResponse() throws ConversionException {
         final Gson gson = getGson();
         final GsonConverter converter = new GsonConverter(gson);
