@@ -55,7 +55,7 @@ To hook it into your own local data, simply pass in a `RecordCache` for the type
 
 #####Example RecordCache:
     public class MyModelCache implements RecordCache<MyModel> {
-      T load(Object key) {
+      MyModel load(Object key) {
         // Add your loading logic here.
       }
 
