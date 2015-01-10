@@ -54,7 +54,7 @@ Note: At this time, only loading supports synchronous calls.
 To hook it into your own local data, simply pass in a `RecordCache` for the type of model being managed into the configuration. The `RecordCache` is a simple interface for managing data that the library will make calls to in order to sync the local database after retrofit calls finish.
 
 #####Example RecordCache:
-    public interface RecordCache <MyModel> {
+    public class MyModelCache implements RecordCache<MyModel> {
       T load(Object key) {
         // Add your loading logic here.
       }
@@ -78,6 +78,16 @@ To hook it into your own local data, simply pass in a `RecordCache` for the type
       void delete(MyModel model) {
         // Add your logic for deleting single object here.
       }
+    }
+    
+    public class MyRecord extends ModelRecord<MyClass> {
+
+        @Override
+        protected SingleRecordConfiguration setupLoadConfiguration(SingleRecordConfiguration configuration, Object key) {
+            ...
+            configuration.setCache(new MyModelCache());
+            return configuration;
+        }
     }
 
     
