@@ -14,8 +14,8 @@ To use the library, simply make a class that extends `ModelRecord`, and override
     
       @Override
       protected SingleRecordConfiguration setupLoadConfiguration(SingleRecordConfiguration configuration, Object key) {
-          configuration.setSuccessEvent(new LoadSucceededEvent());
-          configuration.setFailureEvent(new LoadFailedEvent());
+          configuration.setSuccessEvent(new MyModelLoadSucceededEvent());
+          configuration.setFailureEvent(new MyModelLoadFailedEvent());
           configuration.setAsynchronousNetworkCall(new BaseRecordConfiguration.AsyncNetworkCall() {
               @Override
               public void call(Object o, Callback callback) {
@@ -26,6 +26,9 @@ To use the library, simply make a class that extends `ModelRecord`, and override
           return configuration;
       }
     }
+    
+    Note: `setupLoadConfiguration` sets up a configuration that has been preset up for you by the superclass, which
+    is usually optimal. If you want more control, however, you can instantiate your own configuration class instead.
 
 #####Example synchronous load setup:
 
@@ -51,7 +54,9 @@ You are able to set both asynchronous and synchronous network calls in the same 
 Note: At this time, only loading supports synchronous calls.
 
 ###Setting up local data management
-To hook it into your own local data, simply pass in a `RecordCache` for the type of model being managed into the configuration. The `RecordCache` is a simple interface for managing data that the library will make calls to in order to sync the local database after retrofit calls finish.
+To hook it into your own local data, simply pass in a `RecordCache` for the type of model being managed into the
+configuration. The `RecordCache` is a simple interface for managing data that the library will make calls to in
+order to sync the local database after retrofit calls finish.
 
 #####Example RecordCache:
     public class MyModelCache implements RecordCache<MyModel> {
@@ -91,3 +96,29 @@ To hook it into your own local data, simply pass in a `RecordCache` for the type
     }
 
     
+###Using Record to load objects
+To use the `ModelRecord` to load objects, make sure the configuration calls for whatever action you wish to perform
+have been set up, then simply instantiate the object and make the associated call. Make sure the activity subscribes
+to the events being created for the record.
+
+    public class MyActivity extends Activity {
+    ...
+        @Override
+            protected void onCreate(Bundle savedInstanceState) {
+            ...
+            new MyRecord(this.bus).load(key);
+        }
+    }
+    
+Note: Loading has multiple actions that can be performed with only setting up a single configuration. Please view the <A href="https://github.com/fanpix/android-model-record/blob/master/app/src/main/java/com/fanpics/opensource/android/modelrecord/ModelRecord.java">ModelRecord source</a> to see all available actions for a model.
+
+Note: ModelRecords take an optional second class in their constructor if you need to deal with metadata from the call. Please view the <A href="https://github.com/fanpix/android-model-record/blob/master/app/src/main/java/com/fanpics/opensource/android/modelrecord/HttpReport.java">HttpReport source</a> for more information.
+
+###Event Objects
+Event objects are sent in the bus posts for you to properly manage events.
+
+#####Success Events
+Success events inform you that the request has returned information which you can access with `getResult()`, and tell if the request has fully finished loading or if it will potentially send another event with `hasFinished()` (as is the case when eager loading data from the cache).
+
+#####Failure Events
+Failure events inform you that the request has failed and pass in the `RetrofitError` which can be accessed with `getError()` if more information about the failure is required.
