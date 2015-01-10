@@ -36,8 +36,8 @@ To use the library, simply make a class that extends `ModelRecord`, and override
     
       @Override
       protected SingleRecordConfiguration setupLoadConfiguration(SingleRecordConfiguration configuration, Object key) {
-          configuration.setSuccessEvent(new LoadSucceededEvent());
-          configuration.setFailureEvent(new LoadFailedEvent());
+          configuration.setSuccessEvent(new MyModelLoadSucceededEvent());
+          configuration.setFailureEvent(new MyModelLoadFailedEvent());
           configuration.setSynchronousNetworkCall(new BaseRecordConfiguration.SynchronousNetworkCall() {
             @Override
             public Result call(Object key) {
@@ -107,6 +107,20 @@ to the events being created for the record.
             protected void onCreate(Bundle savedInstanceState) {
             ...
             new MyRecord(this.bus).load(key);
+        }
+
+        @Subscribe
+        public void onMyModelLoadSucceededEvent(MyModelLoadSucceededEvent event) {
+            MyModel myModel = event.getResult();
+            // Handle model loaded
+            if (event.hasFinished()) {
+              // Handle load completed (useful if eager loading)
+            }
+        }
+
+        @Subscribe
+        public void onMyModelLoadFailed(MyModelLoadFailedEvent event) {
+            // Handle load failure
         }
     }
     
