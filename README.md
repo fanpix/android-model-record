@@ -27,8 +27,8 @@ To use the library, simply make a class that extends `ModelRecord`, and override
       }
     }
     
-    Note: `setupLoadConfiguration` sets up a configuration that has been preset up for you by the superclass, which
-    is usually optimal. If you want more control, however, you can instantiate your own configuration class instead.
+Note: `setupLoadConfiguration` sets up a configuration that has been preset up for you by the superclass, which is
+usually optimal. If you want more control, however, you can instantiate your own configuration class instead.
 
 #####Example synchronous load setup:
 
