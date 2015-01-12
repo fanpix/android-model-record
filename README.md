@@ -3,7 +3,7 @@ A library to help manage the interaction with persisted data on the app when usi
 the UI layer. This lets the Activity/Fragment/View classes request information from the record, and let the
 record object manage where it pulls the information from and if/how it is stored.
 
-# Getting Started
+## Getting Started
 To use the library, simply make a class that extends `ModelRecord`, and override the applicable setup configuration method. Each method should include the event that will be fired in the event bus if it succeeds or fails, and the network call that will be executed. For this to work properly with asynchronous requests, the retrofit service needs to use the callback passed in through the `call` method.
 
 ### Adding to project
