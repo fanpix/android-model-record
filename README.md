@@ -48,7 +48,7 @@ usually optimal. If you want more control, however, you can instantiate your own
             @Override
             public Result call(Object key) {
                 MyRetrofitService service = getRestAdapater().create(MyRetrofitService.class);
-                return loadSynchronously(key);
+                return service.loadSynchronously(key);
             }
           });
           return configuration;
