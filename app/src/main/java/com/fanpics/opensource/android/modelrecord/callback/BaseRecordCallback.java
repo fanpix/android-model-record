@@ -3,10 +3,10 @@ package com.fanpics.opensource.android.modelrecord.callback;
 import android.os.Handler;
 
 import com.fanpics.opensource.android.modelrecord.HttpReport;
+import com.fanpics.opensource.android.modelrecord.event.EventProcessor;
 import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.fanpics.opensource.android.modelrecord.configuration.BaseRecordConfiguration;
-import com.squareup.otto.Bus;
 
 import java.util.Date;
 
@@ -16,16 +16,16 @@ import retrofit.client.Response;
 public abstract class BaseRecordCallback {
 
     private final HttpReport httpReport;
-    protected Bus bus;
+    protected EventProcessor eventProcessor;
     protected Handler handler;
 
-    protected BaseRecordCallback(Bus bus, HttpReport httpReport){
-        this.bus = bus;
+    protected BaseRecordCallback(EventProcessor eventProcessor, HttpReport httpReport){
+        this.eventProcessor = eventProcessor;
         this.httpReport = httpReport;
     }
 
-    public BaseRecordCallback(Bus bus, HttpReport httpReport, Handler handler) {
-        this.bus = bus;
+    public BaseRecordCallback(EventProcessor eventProcessor, HttpReport httpReport, Handler handler) {
+        this.eventProcessor = eventProcessor;
         this.httpReport = httpReport;
         this.handler = handler;
     }
@@ -44,7 +44,7 @@ public abstract class BaseRecordCallback {
         return new Runnable() {
             @Override
             public void run() {
-                bus.post(event);
+                eventProcessor.process(event);
             }
         };
     }
@@ -109,7 +109,7 @@ public abstract class BaseRecordCallback {
             public void run() {
                 final FailureEvent event = getRecordConfiguration().getFailureEvent();
                 event.setError(retrofitError);
-                bus.post(event);
+                eventProcessor.process(event);
             }
         };
     }

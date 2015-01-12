@@ -4,10 +4,10 @@ import android.os.Handler;
 
 import com.fanpics.opensource.android.modelrecord.HttpReport;
 import com.fanpics.opensource.android.modelrecord.RecordCache;
-import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.fanpics.opensource.android.modelrecord.configuration.BaseRecordConfiguration;
 import com.fanpics.opensource.android.modelrecord.configuration.MultiRecordConfiguration;
-import com.squareup.otto.Bus;
+import com.fanpics.opensource.android.modelrecord.event.EventProcessor;
+import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 
 import java.util.List;
 
@@ -20,18 +20,18 @@ public class LoadListCallback<T> extends BaseRecordCallback implements Callback<
     protected MultiRecordConfiguration<T> configuration;
     protected Object key;
 
-    protected LoadListCallback(MultiRecordConfiguration<T> configuration, Bus bus, HttpReport httpReport){
-        super(bus, httpReport);
+    protected LoadListCallback(MultiRecordConfiguration<T> configuration, EventProcessor eventProcessor, HttpReport httpReport){
+        super(eventProcessor, httpReport);
         this.configuration = configuration;
     }
 
-    protected LoadListCallback(MultiRecordConfiguration<T> configuration, Bus bus, HttpReport httpReport, Handler handler) {
-        super(bus, httpReport, handler);
+    protected LoadListCallback(MultiRecordConfiguration<T> configuration, EventProcessor eventProcessor, HttpReport httpReport, Handler handler) {
+        super(eventProcessor, httpReport, handler);
         this.configuration = configuration;
     }
 
-    public static <T> LoadListCallback createFromConfiguration(MultiRecordConfiguration<T> settings, Bus bus, HttpReport httpReport, Handler handler) {
-        return new LoadListCallback<>(settings, bus, httpReport, handler);
+    public static <T> LoadListCallback createFromConfiguration(MultiRecordConfiguration<T> settings, EventProcessor eventProcessor, HttpReport httpReport, Handler handler) {
+        return new LoadListCallback<>(settings, eventProcessor, httpReport, handler);
     }
 
     public void setKey(Object key) {

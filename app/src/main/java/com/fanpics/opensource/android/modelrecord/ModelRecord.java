@@ -10,15 +10,25 @@ import com.fanpics.opensource.android.modelrecord.callback.UpdateCallback;
 import com.fanpics.opensource.android.modelrecord.configuration.BaseRecordConfiguration;
 import com.fanpics.opensource.android.modelrecord.configuration.MultiRecordConfiguration;
 import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
+import com.fanpics.opensource.android.modelrecord.event.EventProcessor;
+import com.fanpics.opensource.android.modelrecord.event.OttoProcessor;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.squareup.otto.Bus;
 
 import java.util.List;
 
 public class ModelRecord<T> {
+    protected EventProcessor eventProcessor;
     private HttpReport httpReport;
-    protected Bus bus;
     protected Handler handler;
+
+    /**
+     *
+     * @param bus Event bus to receive events
+     */
+    public ModelRecord(Bus bus) {
+        this(bus, null);
+    }
 
     /**
      *
@@ -27,17 +37,26 @@ public class ModelRecord<T> {
      *                   reporting purposes
      */
     public ModelRecord(Bus bus, HttpReport httpReport) {
-        this.bus = bus;
-        this.httpReport = httpReport;
-        this.handler = new Handler();
+        this(new OttoProcessor(bus), httpReport);
     }
 
     /**
      *
-     * @param bus Event bus to receive events
+     * @param eventProcessor Event processor to receive events
      */
-    public ModelRecord(Bus bus) {
-        this.bus = bus;
+    public ModelRecord(EventProcessor eventProcessor) {
+        this(eventProcessor, null);
+    }
+
+    /**
+     *
+     * @param eventProcessor Event processor to receive events
+     * @param httpReport Class to receive metadata about http call failures and successes for
+     *                   reporting purposes
+     */
+    public ModelRecord(EventProcessor eventProcessor, HttpReport httpReport) {
+        this.eventProcessor = eventProcessor;
+        this.httpReport = httpReport;
         this.handler = new Handler();
     }
 
@@ -45,7 +64,7 @@ public class ModelRecord<T> {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                bus.post(event);
+                eventProcessor.process(event);
             }
         });
     }
@@ -57,7 +76,7 @@ public class ModelRecord<T> {
      */
     public void create(T model){
         SingleRecordConfiguration configuration = setupCreateConfiguration(new SingleRecordConfiguration<T>(), model);
-        final CreateCallback createCallback = CreateCallback.createFromConfiguration(configuration, bus, httpReport);
+        final CreateCallback createCallback = CreateCallback.createFromConfiguration(configuration, eventProcessor, httpReport);
         configuration.performAsynchronousNetworkCall(model, createCallback);
     }
 
@@ -81,7 +100,7 @@ public class ModelRecord<T> {
      */
     public void update(T model){
         SingleRecordConfiguration configuration = setupUpdateConfiguration(new SingleRecordConfiguration<T>(), model);
-        final UpdateCallback updateCallback = UpdateCallback.createFromConfiguration(configuration, bus, httpReport);
+        final UpdateCallback updateCallback = UpdateCallback.createFromConfiguration(configuration, eventProcessor, httpReport);
         configuration.performAsynchronousNetworkCall(model, updateCallback);
     }
 
@@ -105,7 +124,7 @@ public class ModelRecord<T> {
      */
     public void delete(T model){
         SingleRecordConfiguration configuration = setupDeleteConfiguration(new SingleRecordConfiguration(), model);
-        final DeleteCallback deleteCallback = DeleteCallback.createFromConfiguration(configuration, bus, httpReport, model);
+        final DeleteCallback deleteCallback = DeleteCallback.createFromConfiguration(configuration, eventProcessor, httpReport, model);
         configuration.performAsynchronousNetworkCall(model, deleteCallback);
     }
 
@@ -251,7 +270,7 @@ public class ModelRecord<T> {
 
     @SuppressWarnings("unchecked")
     private Object loadOnNetwork(Object key, SingleRecordConfiguration configuration) {
-        final LoadCallback loadCallback = LoadCallback.createFromConfiguration(configuration, bus, httpReport, key, handler);
+        final LoadCallback loadCallback = LoadCallback.createFromConfiguration(configuration, eventProcessor, httpReport, key, handler);
         if (configuration.shouldRunSynchronously()){
             final Result result = configuration.performSynchronousNetworkCall(key);
             if(!result.shouldCache()) {
@@ -406,7 +425,7 @@ public class ModelRecord<T> {
 
     @SuppressWarnings("unchecked")
     private List loadListOnNetwork(Object key, MultiRecordConfiguration configuration) {
-        final LoadListCallback loadListCallback = LoadListCallback.createFromConfiguration(configuration, bus, httpReport, handler);
+        final LoadListCallback loadListCallback = LoadListCallback.createFromConfiguration(configuration, eventProcessor, httpReport, handler);
         if (configuration.shouldRunSynchronously()){
             final Result<List> result = configuration.performSynchronousNetworkCall(key);
             if(!result.shouldCache()) {

@@ -4,10 +4,10 @@ import android.os.Handler;
 
 import com.fanpics.opensource.android.modelrecord.HttpReport;
 import com.fanpics.opensource.android.modelrecord.RecordCache;
-import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 import com.fanpics.opensource.android.modelrecord.configuration.BaseRecordConfiguration;
 import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
-import com.squareup.otto.Bus;
+import com.fanpics.opensource.android.modelrecord.event.EventProcessor;
+import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -18,12 +18,12 @@ public class RecordCallback<T> extends BaseRecordCallback implements Callback<T>
     protected SingleRecordConfiguration<T> configuration;
     protected Object key;
 
-    protected RecordCallback(SingleRecordConfiguration<T> configuration, Bus bus, HttpReport httpReport){
-        super(bus, httpReport);
+    protected RecordCallback(SingleRecordConfiguration<T> configuration, EventProcessor eventProcessor, HttpReport httpReport){
+        super(eventProcessor, httpReport);
         this.configuration = configuration;
     }
 
-    public RecordCallback(SingleRecordConfiguration<T> configuration, Bus bus, HttpReport httpReport, Handler handler) {
+    public RecordCallback(SingleRecordConfiguration<T> configuration, EventProcessor bus, HttpReport httpReport, Handler handler) {
         super(bus, httpReport, handler);
         this.configuration = configuration;
     }

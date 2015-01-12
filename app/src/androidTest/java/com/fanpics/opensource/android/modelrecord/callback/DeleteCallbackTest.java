@@ -1,10 +1,10 @@
 package com.fanpics.opensource.android.modelrecord.callback;
 
 import com.fanpics.opensource.android.modelrecord.RecordCache;
+import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
+import com.fanpics.opensource.android.modelrecord.event.EventProcessor;
 import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
-import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
-import com.squareup.otto.Bus;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,12 +18,12 @@ public class DeleteCallbackTest {
 
     private RecordCache cache;
     private SingleRecordConfiguration configuration;
-    private Bus bus;
+    private EventProcessor eventProcessor;
 
     @Before
     public void createRecordCallback() {
         configuration = mock(SingleRecordConfiguration.class);
-        bus = mock(Bus.class);
+        eventProcessor = mock(EventProcessor.class);
         cache = mock(RecordCache.class);
     }
 
@@ -31,7 +31,7 @@ public class DeleteCallbackTest {
     @SuppressWarnings("unchecked")
     public void testFailureWithoutCache() {
         final Object model = new Object();
-        DeleteCallback<Object> deleteCallback = DeleteCallback.createFromConfiguration(configuration, bus, null, model);
+        DeleteCallback<Object> deleteCallback = DeleteCallback.createFromConfiguration(configuration, eventProcessor, null, model);
         when(configuration.getFailureEvent()).thenReturn(new FailureEvent());
         when(deleteCallback.configuration.getCache()).thenReturn(null);
 
@@ -44,7 +44,7 @@ public class DeleteCallbackTest {
     @SuppressWarnings("unchecked")
     public void testSuccessWithCache() {
         final Object model = new Object();
-        DeleteCallback<Object> deleteCallback = DeleteCallback.createFromConfiguration(configuration, bus, null, model);
+        DeleteCallback<Object> deleteCallback = DeleteCallback.createFromConfiguration(configuration, eventProcessor, null, model);
         when(configuration.getSuccessEvent()).thenReturn(new SuccessEvent());
         when(deleteCallback.configuration.getCache()).thenReturn(cache);
 

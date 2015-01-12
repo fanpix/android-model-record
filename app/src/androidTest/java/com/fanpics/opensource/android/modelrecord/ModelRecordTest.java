@@ -9,9 +9,9 @@ import com.fanpics.opensource.android.modelrecord.callback.LoadListCallback;
 import com.fanpics.opensource.android.modelrecord.callback.UpdateCallback;
 import com.fanpics.opensource.android.modelrecord.configuration.MultiRecordConfiguration;
 import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
+import com.fanpics.opensource.android.modelrecord.event.EventProcessor;
 import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
-import com.squareup.otto.Bus;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -143,7 +143,7 @@ public class ModelRecordTest {
         when(modelRecord.setupLoadConfiguration(any(SingleRecordConfiguration.class), any(Object.class))).thenReturn(singleRecordConfiguration);
         when(singleRecordConfiguration.getCache()).thenReturn(cache);
         when(cache.load(object)).thenReturn(result);
-        modelRecord.bus = mock(Bus.class);
+        modelRecord.eventProcessor = mock(EventProcessor.class);
 
         when(singleRecordConfiguration.shouldLoadFromNetwork()).thenReturn(true);
         when(singleRecordConfiguration.shouldLoadFromCache()).thenReturn(true);
@@ -154,7 +154,7 @@ public class ModelRecordTest {
 
         assertThat(singleRecordConfiguration.getSuccessEvent().hasFinished());
         verify(cache).load(object);
-        verify(modelRecord.bus).post(singleRecordConfiguration.getSuccessEvent());
+        verify(modelRecord.eventProcessor).process(singleRecordConfiguration.getSuccessEvent());
         verify(singleRecordConfiguration).performAsynchronousNetworkCall(eq(object), any(LoadCallback.class));
     }
 
@@ -166,7 +166,7 @@ public class ModelRecordTest {
         when(modelRecord.setupLoadConfiguration(any(SingleRecordConfiguration.class), any(Object.class))).thenReturn(singleRecordConfiguration);
         when(singleRecordConfiguration.getCache()).thenReturn(cache);
         when(cache.load(object)).thenReturn(result);
-        modelRecord.bus = mock(Bus.class);
+        modelRecord.eventProcessor = mock(EventProcessor.class);
 
         when(singleRecordConfiguration.shouldLoadFromNetwork()).thenReturn(false);
         when(singleRecordConfiguration.shouldLoadFromCache()).thenReturn(true);
@@ -177,7 +177,7 @@ public class ModelRecordTest {
 
         assertThat(singleRecordConfiguration.getSuccessEvent().hasFinished());
         verify(cache).load(object);
-        verify(modelRecord.bus).post(singleRecordConfiguration.getSuccessEvent());
+        verify(modelRecord.eventProcessor).process(singleRecordConfiguration.getSuccessEvent());
         verify(singleRecordConfiguration, never()).performAsynchronousNetworkCall(eq(object), any(LoadCallback.class));
     }
 
@@ -214,7 +214,7 @@ public class ModelRecordTest {
 
         when(modelRecord.setupLoadListConfiguration(any(MultiRecordConfiguration.class), any(Object.class))).thenReturn(multiRecordConfiguration);
         when(cache.loadList(object)).thenReturn(result);
-        modelRecord.bus = mock(Bus.class);
+        modelRecord.eventProcessor = mock(EventProcessor.class);
 
         when(multiRecordConfiguration.shouldLoadFromNetwork()).thenReturn(true);
         when(multiRecordConfiguration.shouldLoadFromCache()).thenReturn(true);
@@ -224,7 +224,7 @@ public class ModelRecordTest {
         modelRecord.loadList(object, new MultiRecordConfiguration(MultiRecordConfiguration.Type.LOAD));
 
         verify(cache).loadList(object);
-        verify(modelRecord.bus).post(multiRecordConfiguration.getSuccessEvent());
+        verify(modelRecord.eventProcessor).process(multiRecordConfiguration.getSuccessEvent());
         verify(multiRecordConfiguration).performAsynchronousNetworkCall(eq(object), any(LoadListCallback.class));
     }
 
@@ -235,7 +235,7 @@ public class ModelRecordTest {
 
         when(modelRecord.setupLoadListConfiguration(any(MultiRecordConfiguration.class), any(Object.class))).thenReturn(multiRecordConfiguration);
         when(cache.loadList(object)).thenReturn(result);
-        modelRecord.bus = mock(Bus.class);
+        modelRecord.eventProcessor = mock(EventProcessor.class);
 
         when(multiRecordConfiguration.shouldLoadFromNetwork()).thenReturn(false);
         when(multiRecordConfiguration.shouldLoadFromCache()).thenReturn(true);
@@ -245,7 +245,7 @@ public class ModelRecordTest {
         modelRecord.loadList(object, new MultiRecordConfiguration(MultiRecordConfiguration.Type.LOAD));
 
         verify(cache).loadList(object);
-        verify(modelRecord.bus).post(multiRecordConfiguration.getSuccessEvent());
+        verify(modelRecord.eventProcessor).process(multiRecordConfiguration.getSuccessEvent());
         verify(multiRecordConfiguration, never()).performAsynchronousNetworkCall(eq(object), any(LoadListCallback.class));
     }
 

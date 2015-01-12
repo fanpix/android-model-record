@@ -1,10 +1,10 @@
 package com.fanpics.opensource.android.modelrecord.callback;
 
 import com.fanpics.opensource.android.modelrecord.RecordCache;
+import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
+import com.fanpics.opensource.android.modelrecord.event.EventProcessor;
 import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
 import com.fanpics.opensource.android.modelrecord.event.SuccessEvent;
-import com.fanpics.opensource.android.modelrecord.configuration.SingleRecordConfiguration;
-import com.squareup.otto.Bus;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class RecordCallbackTest {
     public void createRecordCallback() {
         recordCallback = mock(RecordCallback.class);
         recordCallback.configuration = mock(SingleRecordConfiguration.class);
-        recordCallback.bus = mock(Bus.class);
+        recordCallback.eventProcessor = mock(EventProcessor.class);
         RecordCache cache = mock(RecordCache.class);
         when(recordCallback.getRecordConfiguration()).thenCallRealMethod();
         when(recordCallback.configuration.getCache()).thenReturn(cache);
@@ -46,7 +46,7 @@ public class RecordCallbackTest {
 
         recordCallback.success(object, null);
         verify(recordCallback.configuration).callSuccessCallback(object);
-        verify(recordCallback.bus).post(event);
+        verify(recordCallback.eventProcessor).process(event);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class RecordCallbackTest {
 
         recordCallback.success(object, null);
         verify(recordCallback.configuration).callSuccessCallback(object);
-        verify(recordCallback.bus).post(event);
+        verify(recordCallback.eventProcessor).process(event);
         verify(recordCallback).runCacheThread(object);
     }
 
@@ -105,7 +105,7 @@ public class RecordCallbackTest {
 
         recordCallback.failure(mock(RetrofitError.class));
         verify(recordCallback.configuration).callFailureCallback();
-        verify(recordCallback.bus).post(event);
+        verify(recordCallback.eventProcessor).process(event);
     }
 
 }
