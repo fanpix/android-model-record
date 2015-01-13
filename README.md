@@ -9,7 +9,7 @@ To use the library, simply make a class that extends `ModelRecord`, and override
 ### Adding to project
 #####Gradle
     dependencies {
-        compile 'com.fanpics.opensource:model-record:1.0.0'
+        compile 'com.fanpics.opensource:model-record:1.1.0'
     }
 
 ### Setting up basic calls
@@ -142,6 +142,10 @@ Success events inform you that the request has returned information which you ca
 
 #####Failure Events
 Failure events inform you that the request has failed and pass in the `RetrofitError` which can be accessed with `getError()` if more information about the failure is required.
+
+
+###Alternate event processors
+Model Record works out of the box with Otto's event bus, however it's possible to use a custom event processor. Simple extend the `EventProcessor` class and pass it in place of Otto's event bus in the constructor for your record class. See the <A href="https://github.com/fanpix/android-model-record/blob/master/app/src/main/java/com/fanpics/opensource/android/modelrecord/event/EventProcessor.java">EventProcessor source</a> and the <A href="https://github.com/fanpix/android-model-record/blob/master/app/src/main/java/com/fanpics/opensource/android/modelrecord/event/OttoProcessor.java">OttoProcessor source</a> for more information.
 
 #License
     Copyright (c) 2014 Fanpics LLC
