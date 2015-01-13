@@ -145,7 +145,7 @@ Failure events inform you that the request has failed and pass in the `RetrofitE
 
 
 ###Alternate event processors
-Model Record works out of the box with Otto's event bus, however it's possible to use a custom event processor. Simple extend the `EventProcessor` class and pass it in place of Otto's event bus in the constructor for your record class. See the <A href="https://github.com/fanpix/android-model-record/blob/master/app/src/main/java/com/fanpics/opensource/android/modelrecord/event/EventProcessor.java">EventProcessor source</a> and the <A href="https://github.com/fanpix/android-model-record/blob/master/app/src/main/java/com/fanpics/opensource/android/modelrecord/event/OttoProcessor.java">OttoProcessor source</a> for more information.
+Model Record works out of the box with Otto's event bus, however it's possible to use a custom event processor. Simple extend the `EventProcessor` class, override the `process(Object)` method, and pass it in place of Otto's event bus in the constructor for your record class. See the <A href="https://github.com/fanpix/android-model-record/blob/master/app/src/main/java/com/fanpics/opensource/android/modelrecord/event/EventProcessor.java">EventProcessor source</a> and the <A href="https://github.com/fanpix/android-model-record/blob/master/app/src/main/java/com/fanpics/opensource/android/modelrecord/event/OttoProcessor.java">OttoProcessor source</a> for more information.
 
 #License
     Copyright (c) 2014 Fanpics LLC
