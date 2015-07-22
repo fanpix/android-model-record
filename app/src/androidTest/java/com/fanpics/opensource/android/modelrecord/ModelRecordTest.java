@@ -117,6 +117,15 @@ public class ModelRecordTest {
     }
 
     @Test
+    public void testLoadSynchronously() {
+        modelRecord = mock(ModelRecord.class);
+        doCallRealMethod().when(modelRecord).loadSynchronously();
+
+        modelRecord.loadSynchronously();
+        verify(modelRecord).loadSynchronously(null);
+    }
+
+    @Test
     public void testLoadingWithNetworkAndNoCache() {
         final Object object = new Object();
 
@@ -191,6 +200,15 @@ public class ModelRecordTest {
     }
 
     @Test
+    public void testLoadListSynchronously() {
+        modelRecord = mock(ModelRecord.class);
+        doCallRealMethod().when(modelRecord).loadListSynchronously();
+
+        modelRecord.loadListSynchronously();
+        verify(modelRecord).loadListSynchronously(null);
+    }
+
+    @Test
     public void testLoadingListWithNetworkAndNoCache() {
         final Object object = new Object();
 
@@ -250,12 +268,33 @@ public class ModelRecordTest {
     }
 
     @Test
+    public void testLoadListSynchronouslyWithKey() {
+        modelRecord = mock(ModelRecord.class);
+        Object key = new Object();
+        ArgumentCaptor<MultiRecordConfiguration> configurationCaptor = ArgumentCaptor.forClass(MultiRecordConfiguration.class);
+        doCallRealMethod().when(modelRecord).loadListSynchronously(any());
+
+        modelRecord.loadListSynchronously(key);
+        verify(modelRecord).loadList(eq(key), configurationCaptor.capture());
+        assertThat(configurationCaptor.getValue().getType()).isEqualTo(MultiRecordConfiguration.Type.LOAD);
+    }
+
+    @Test
     public void testRefresh() {
         modelRecord = mock(ModelRecord.class);
         doCallRealMethod().when(modelRecord).refresh();
 
         modelRecord.refresh();
         verify(modelRecord).refresh(null);
+    }
+
+    @Test
+    public void testRefreshSynchronously() {
+        modelRecord = mock(ModelRecord.class);
+        doCallRealMethod().when(modelRecord).refreshSynchronously();
+
+        modelRecord.refreshSynchronously();
+        verify(modelRecord).refreshSynchronously(null);
     }
 
     @Test
@@ -272,12 +311,33 @@ public class ModelRecordTest {
     }
 
     @Test
+    public void testRefreshSynchronouslyWithKey() {
+        modelRecord = mock(ModelRecord.class);
+        Object key = new Object();
+        ArgumentCaptor<SingleRecordConfiguration> configurationCaptor = ArgumentCaptor.forClass(SingleRecordConfiguration.class);
+        doCallRealMethod().when(modelRecord).refreshSynchronously(any());
+
+        modelRecord.refreshSynchronously(key);
+        verify(modelRecord).load(eq(key), configurationCaptor.capture());
+        assertThat(configurationCaptor.getValue().getType()).isEqualTo(SingleRecordConfiguration.Type.REFRESH);
+    }
+
+    @Test
     public void testRefreshList() {
         modelRecord = mock(ModelRecord.class);
         doCallRealMethod().when(modelRecord).refreshList();
 
         modelRecord.refreshList();
         verify(modelRecord).refreshList(null);
+    }
+
+    @Test
+    public void testRefreshListSynchronously() {
+        modelRecord = mock(ModelRecord.class);
+        doCallRealMethod().when(modelRecord).refreshListSynchronously();
+
+        modelRecord.refreshListSynchronously();
+        verify(modelRecord).refreshListSynchronously(null);
     }
 
     @Test
@@ -294,12 +354,33 @@ public class ModelRecordTest {
     }
 
     @Test
+    public void testRefreshListSynchronouslyWithKey() {
+        modelRecord = mock(ModelRecord.class);
+        Object key = new Object();
+        ArgumentCaptor<MultiRecordConfiguration> configurationCaptor = ArgumentCaptor.forClass(MultiRecordConfiguration.class);
+        doCallRealMethod().when(modelRecord).refreshListSynchronously(any());
+
+        modelRecord.refreshListSynchronously(key);
+        verify(modelRecord).loadList(eq(key), configurationCaptor.capture());
+        assertThat(configurationCaptor.getValue().getType()).isEqualTo(MultiRecordConfiguration.Type.REFRESH);
+    }
+
+    @Test
     public void testGetPreLoaded() {
         modelRecord = mock(ModelRecord.class);
         doCallRealMethod().when(modelRecord).getPreLoaded();
 
         modelRecord.getPreLoaded();
         verify(modelRecord).getPreLoaded(null);
+    }
+
+    @Test
+    public void testGetPreLoadedSynchronously() {
+        modelRecord = mock(ModelRecord.class);
+        doCallRealMethod().when(modelRecord).getPreLoadedSynchronously();
+
+        modelRecord.getPreLoadedSynchronously();
+        verify(modelRecord).getPreLoadedSynchronously(null);
     }
 
     @Test
@@ -316,12 +397,34 @@ public class ModelRecordTest {
     }
 
     @Test
+    public void testGetPreLoadedSynchronouslyWithKey() {
+        final Object key = new Object();
+        ArgumentCaptor<SingleRecordConfiguration> settings = ArgumentCaptor.forClass(SingleRecordConfiguration.class);
+
+        when(modelRecord.setupLoadConfiguration(any(SingleRecordConfiguration.class), any(Object.class))).thenReturn(this.singleRecordConfiguration);
+        doCallRealMethod().when(modelRecord).getPreLoadedSynchronously(any(Object.class));
+        modelRecord.getPreLoadedSynchronously(key);
+
+        verify(modelRecord).load(eq(key), settings.capture());
+        assertThat(settings.getValue().getType()).isEqualTo(SingleRecordConfiguration.Type.CACHE_ONLY);
+    }
+
+    @Test
     public void testGetPreLoadedList() {
         modelRecord = mock(ModelRecord.class);
         doCallRealMethod().when(modelRecord).getPreLoadedList();
 
         modelRecord.getPreLoadedList();
         verify(modelRecord).getPreLoadedList(null);
+    }
+
+    @Test
+    public void testGetPreLoadedListSynchronously() {
+        modelRecord = mock(ModelRecord.class);
+        doCallRealMethod().when(modelRecord).getPreLoadedListSynchronously();
+
+        modelRecord.getPreLoadedListSynchronously();
+        verify(modelRecord).getPreLoadedListSynchronously(null);
     }
 
     @Test
@@ -334,6 +437,19 @@ public class ModelRecordTest {
         modelRecord.getPreLoadedList(key);
 
         verify(modelRecord).loadListAsynchronously(eq(key), settings.capture());
+        assertThat(settings.getValue().getType()).isEqualTo(SingleRecordConfiguration.Type.CACHE_ONLY);
+    }
+
+    @Test
+    public void testGetPreLoadedListSynchronouslyWithKey() {
+        final Object key = new Object();
+        ArgumentCaptor<MultiRecordConfiguration> settings = ArgumentCaptor.forClass(MultiRecordConfiguration.class);
+
+        when(modelRecord.setupLoadListConfiguration(any(MultiRecordConfiguration.class), any(Object.class))).thenReturn(multiRecordConfiguration);
+        doCallRealMethod().when(modelRecord).getPreLoadedListSynchronously(any(Object.class));
+        modelRecord.getPreLoadedListSynchronously(key);
+
+        verify(modelRecord).loadList(eq(key), settings.capture());
         assertThat(settings.getValue().getType()).isEqualTo(SingleRecordConfiguration.Type.CACHE_ONLY);
     }
 

@@ -241,6 +241,27 @@ public class ModelRecord<T> {
         return load(key, configuration);
     }
 
+    /**
+     * Calls @getPreLoadedSynchronously without a key
+     *
+     * @return Loaded object
+     */
+    public Object getPreLoadedSynchronously() {
+        return getPreLoadedSynchronously(null);
+    }
+
+    /**
+     * Loads object synchronously from cache
+     *
+     * @param key Key to be sent in load call
+     * @return Loaded object
+     */
+    public Object getPreLoadedSynchronously(Object key) {
+        final SingleRecordConfiguration configuration = new SingleRecordConfiguration(SingleRecordConfiguration.Type.CACHE_ONLY);
+        configuration.setRunSynchronously();
+        return load(key, configuration);
+    }
+
     protected Object load(Object key, SingleRecordConfiguration baseConfiguration) {
         SingleRecordConfiguration configuration = setupLoadConfiguration(baseConfiguration, key);
 
@@ -393,6 +414,27 @@ public class ModelRecord<T> {
      */
     public List refreshListSynchronously(Object key) {
         final MultiRecordConfiguration configuration = new MultiRecordConfiguration<T>(MultiRecordConfiguration.Type.REFRESH);
+        configuration.setRunSynchronously();
+        return loadList(key, configuration);
+    }
+
+    /**
+     * Calls @getPreLoadedListSynchronously without a key
+     *
+     * @return Loaded list
+     */
+    public List getPreLoadedListSynchronously() {
+        return getPreLoadedListSynchronously(null);
+    }
+
+    /**
+     * Loads list synchronously from cache
+     *
+     * @param key Key to be sent in load call
+     * @return Loaded object
+     */
+    public List getPreLoadedListSynchronously(Object key) {
+        final MultiRecordConfiguration configuration = new MultiRecordConfiguration<T>(MultiRecordConfiguration.Type.CACHE_ONLY);
         configuration.setRunSynchronously();
         return loadList(key, configuration);
     }
