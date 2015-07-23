@@ -17,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 repositories {
@@ -27,7 +31,7 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.fanpics.opensource:model-record:1.1.0'
+    compile 'com.fanpics.opensource:model-record:1.2.0'
     compile 'com.squareup.picasso:picasso:2.3.2'
     compile 'io.realm:realm-android:0.75.1'
 
