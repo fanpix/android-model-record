@@ -1,5 +1,7 @@
 package com.fanpics.opensource.android.modelrecord.callback;
 
+import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
+
 public interface FailureCallback {
-    public void call();
+    void call(FailureEvent failureEvent);
 }

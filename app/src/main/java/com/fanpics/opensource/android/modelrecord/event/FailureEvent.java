@@ -1,5 +1,7 @@
 package com.fanpics.opensource.android.modelrecord.event;
 
+import java.net.SocketTimeoutException;
+
 import retrofit.RetrofitError;
 
 public class FailureEvent {
@@ -12,5 +14,13 @@ public class FailureEvent {
 
     public RetrofitError getError() {
         return error;
+    }
+
+    public boolean isNetworkTimeoutError() {
+        if (error.getCause() instanceof SocketTimeoutException){
+            return true;
+        }
+
+        return false;
     }
 }
