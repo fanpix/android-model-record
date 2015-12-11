@@ -54,6 +54,8 @@ public abstract class BaseRecordCallback {
             reportHttpFailure(retrofitError);
         }
 
+        final FailureEvent event = getRecordConfiguration().getFailureEvent();
+        event.setError(retrofitError);
         getRecordConfiguration().callFailureCallback();
         postFailureEvent(retrofitError);
     }
@@ -108,7 +110,6 @@ public abstract class BaseRecordCallback {
             @Override
             public void run() {
                 final FailureEvent event = getRecordConfiguration().getFailureEvent();
-                event.setError(retrofitError);
                 eventProcessor.process(event);
             }
         };

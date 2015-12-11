@@ -1,5 +1,8 @@
 package com.fanpics.opensource.android.modelrecord.event;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+
 import retrofit.RetrofitError;
 
 public class FailureEvent {
@@ -12,5 +15,13 @@ public class FailureEvent {
 
     public RetrofitError getError() {
         return error;
+    }
+
+    public boolean isNetworkTimeoutError() {
+        if (error.getCause() instanceof SocketTimeoutException || error.getCause() instanceof UnknownHostException){
+            return true;
+        }
+
+        return false;
     }
 }
