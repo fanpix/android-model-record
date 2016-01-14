@@ -2,6 +2,7 @@ package com.fanpics.opensource.android.modelrecord.configuration;
 
 import com.fanpics.opensource.android.modelrecord.callback.FailureCallback;
 import com.fanpics.opensource.android.modelrecord.callback.SuccessCallback;
+import com.fanpics.opensource.android.modelrecord.event.FailureEvent;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,16 +59,16 @@ public class BaseRecordConfigurationTest {
 
     @Test
     public void testCallFailureCallback() {
-        final BaseRecordConfiguration settings = mock(BaseRecordConfiguration.class);
+        final boolean[] callbackWasCalled = {false};
         configuration.setFailureCallback(new FailureCallback() {
             @Override
-            public void call() {
-                settings.getFailureEvent();
+            public void call(FailureEvent failureEvent) {
+                callbackWasCalled[0] = true;
             }
         });
 
         configuration.callFailureCallback();
-        verify(settings).getFailureEvent();
+        assertThat(callbackWasCalled[0]).isTrue();
     }
 
     @Test

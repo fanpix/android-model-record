@@ -81,7 +81,7 @@ public abstract class BaseRecordConfiguration<T> {
     }
 
     public void callFailureCallback() {
-        if (failureCallback != null && failureEvent != null) {
+        if (failureCallback != null) {
             failureCallback.call(failureEvent);
         }
     }
