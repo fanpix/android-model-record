@@ -1,5 +1,6 @@
 package com.fanpics.opensource.android.modelrecord;
 
+import android.os.Build;
 import android.os.Handler;
 
 import com.fanpics.opensource.android.modelrecord.callback.CreateCallback;
@@ -17,7 +18,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
+@RunWith(RobolectricGradleTestRunner.class)
 public class ModelRecordTest {
 
     private ModelRecord modelRecord;
