@@ -9,7 +9,7 @@ To use the library, simply make a class that extends `ModelRecord`, and override
 ### Adding to project
 #####Gradle
     dependencies {
-        compile 'com.fanpics.opensource:model-record:1.1.0'
+        compile 'com.fanpics.opensource:model-record:1.3.0'
     }
 
 ### Setting up basic calls
