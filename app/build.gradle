@@ -4,7 +4,7 @@ apply plugin: 'maven'
 ext {
     PUBLISH_GROUP_ID = 'com.fanpics.opensource'
     PUBLISH_ARTIFACT_ID = 'model-record'
-    PUBLISH_VERSION = '1.2.0'
+    PUBLISH_VERSION = '1.3.0'
 }
 
 android {
@@ -14,7 +14,7 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 2
+        versionCode 3
         versionName "1.2.0"
     }
     buildTypes {
